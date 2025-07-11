@@ -1,2 +1,7 @@
 @import "tailwindcss";
 
+.lendingPage {
+  background-image: url('/back.jpeg');
+  background-size: cover;
+  background-position: center;
+}
