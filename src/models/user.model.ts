@@ -7,9 +7,11 @@ export interface User{
     dp: string;
     username: string;
     bio: string;
+    online:boolean;
     followers: string[];
     following: string[];
     createdAt: Timestamp;
+
 }
 
 export interface AuthState {

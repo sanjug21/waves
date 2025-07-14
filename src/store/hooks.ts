@@ -1,6 +1,6 @@
-
-import { useDispatch, useSelector, useStore,  } from 'react-redux';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 import type {RootState, AppDispatch} from "./store";
+import App from 'next/app';
 
 export const useAppDispatch=useDispatch.withTypes<AppDispatch>();
 export const useAppSelector = useSelector.withTypes<RootState>();
@@ -9,4 +9,4 @@ export const useAppSelector = useSelector.withTypes<RootState>();
 // export const useAppStore = useStore<AppStore>();
 
 // Or, if you don't need to type it, just use:
-export const useAppStore = useStore();
+export const useAppStore = useStore;
