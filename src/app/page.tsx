@@ -1,15 +1,39 @@
 "use client";
 
+import Loader from "@/components/Loader";
+import { authListener, logoutUser } from "@/lib/firebase/auth";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { FiArrowLeft } from "react-icons/fi"; 
 
 export default function Home() {
   const [showOptions, setShowOptions] = useState(false);
 
+  const user=useAppSelector((state)=>state.auth.user);
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const isLoadingAuth = useAppSelector((state) => state.auth.loading);
+  useEffect(() => {
+  
+    const unsubscribe = authListener(dispatch);
+    if(isAuthenticated) {
+      router.replace('/home');
+    }
+        return () => unsubscribe();
+  }, [isAuthenticated, dispatch, router]);
+
   const toggle = () => {
     setShowOptions(!showOptions);
   };
+
+  if( isLoadingAuth) {
+    return (
+      <Loader/>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-cover bg-center lendingPage flex flex-col items-center justify-center p-4 overflow-hidden font-sans">
