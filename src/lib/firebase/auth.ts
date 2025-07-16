@@ -6,7 +6,7 @@ import { setLoading, setUser, clearUser, setError } from '@/store/slices/authSli
 import { User } from '@/models/user.model';
 
 import { loginSchema, registerSchema } from '../validation/auth.validation';
-import { log } from 'console';
+
 
 const mapFirebaseUserToUser = async (firebaseUser: FirebaseUser): Promise<User | null> => {
   if (!firebaseUser) return null;
@@ -15,18 +15,21 @@ const mapFirebaseUserToUser = async (firebaseUser: FirebaseUser): Promise<User |
   const userDocSnap = await getDoc(userDocRef);
 
   if (userDocSnap.exists()) {
-    const userData = userDocSnap.data() as User;
+    const userDataFromFirestore = userDocSnap.data();
+    const createdAtTimestamp = userDataFromFirestore.createdAt as Timestamp;
+
     return {
       uid: firebaseUser.uid,
       email: firebaseUser.email ?? '',
-      name: userData.name ?? firebaseUser.displayName ?? '',
-      dp: userData.dp ?? "https://firebasestorage.googleapis.com/v0/b/chatbot-84fc1.appspot.com/o/de.png?alt=media&token=e141a658-2053-4e0a-af29-907641dd4446",
-      username: userData.username ?? '',
-      bio: userData.bio ?? '',
-      online: userData.online ?? false,
-      followers: userData.followers ?? [],
-      following: userData.following ?? [],
-      createdAt: (userData.createdAt as Timestamp) || Timestamp.now(),
+      name: userDataFromFirestore.name ?? firebaseUser.displayName ?? '',
+      dp: userDataFromFirestore.dp ?? "https://firebasestorage.googleapis.com/v0/b/chatbot-84fc1.appspot.com/o/de.png?alt=media&token=e141a658-2053-4e0a-af29-907641dd4446",
+      username: userDataFromFirestore.username ?? '',
+      bio: userDataFromFirestore.bio ?? '',
+      online: userDataFromFirestore.online ?? false,
+      followers: userDataFromFirestore.followers ?? [],
+      following: userDataFromFirestore.following ?? [],
+      posts:userDataFromFirestore.posts??[],
+      createdAt: createdAtTimestamp ? createdAtTimestamp.toDate().toISOString() : Timestamp.now().toDate().toISOString(),
     };
   }
   return null;
@@ -43,27 +46,29 @@ export const registerUser = async (dispatch: AppDispatch, email: string, passwor
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const firebaseUser = userCredential.user;
 
-    const user: User = {
+    const userForFirestore = {
       uid: firebaseUser.uid,
       email: firebaseUser.email ?? '',
       name,
       dp: "https://firebasestorage.googleapis.com/v0/b/chatbot-84fc1.appspot.com/o/de.png?alt=media&token=e141a658-2053-4e0a-af29-907641dd4446",
       username: name.toLowerCase(),
       bio: '',
-      online:true,
+      online: true,
       followers: [],
       following: [],
-      createdAt: serverTimestamp() as Timestamp,
+      posts:[],
+      createdAt: serverTimestamp(),
     };
 
-    await setDoc(doc(db, 'Users', user.uid), user);
+    await setDoc(doc(db, 'Users', userForFirestore.uid), userForFirestore);
 
-    const userData = await mapFirebaseUserToUser(firebaseUser);
-    dispatch(setUser(userData));
+    const userDataForRedux = await mapFirebaseUserToUser(firebaseUser);
+    dispatch(setUser(userDataForRedux));
 
   } catch (error: any) {
     console.error('Error registering user:', error);
     dispatch(setError(error.message || 'An unknown error occurred.'));
+    throw error;
   } finally {
     dispatch(setLoading(false));
   }
@@ -86,6 +91,7 @@ export const loginUser = async (dispatch: AppDispatch, email: string, password: 
   } catch (error: any) {
     console.error('Error logging in user:', error);
     dispatch(setError(error.message || 'An unknown error occurred.'));
+    throw error;
   } finally {
     dispatch(setLoading(false));
   }
@@ -109,17 +115,50 @@ export const logoutUser = async (dispatch: AppDispatch) => {
 export const authListener = (dispatch: AppDispatch) => {
   const unsubscribe = auth.onAuthStateChanged(
     async (firebaseuser) => {
-      console.log('Auth state changed:', firebaseuser);
       dispatch(setLoading(true));
       if (firebaseuser) {
         const user = await mapFirebaseUserToUser(firebaseuser);
         dispatch(setUser(user));
       } else {
         dispatch(clearUser());
-        
       }
       dispatch(setLoading(false));
     }
   );
   return unsubscribe;
+};
+
+
+
+
+export const getUserDetails = async (uid: string): Promise<User | null> => {
+  try {
+    const userDocRef = doc(db, 'Users', uid);
+    const userDocSnap = await getDoc(userDocRef);
+
+    if (userDocSnap.exists()) {
+      const userDataFromFirestore = userDocSnap.data();
+      const createdAtTimestamp = userDataFromFirestore.createdAt as Timestamp;
+
+      return {
+        uid: uid,
+        email: userDataFromFirestore.email ?? '',
+        name: userDataFromFirestore.name ?? '',
+        dp: userDataFromFirestore.dp ?? "https://firebasestorage.googleapis.com/v0/b/chatbot-84fc1.appspot.com/o/de.png?alt=media&token=e141a658-2053-4e0a-af29-907641dd4446",
+        username: userDataFromFirestore.username ?? '',
+        bio: userDataFromFirestore.bio ?? '',
+        online: userDataFromFirestore.online ?? false,
+        followers: userDataFromFirestore.followers ?? [],
+        following: userDataFromFirestore.following ?? [],
+        posts: userDataFromFirestore.posts ?? [],
+        createdAt: createdAtTimestamp ? createdAtTimestamp.toDate().toISOString() : Timestamp.now().toDate().toISOString(),
+      };
+    } else {
+      console.warn(`User with UID ${uid} not found in Firestore.`);
+      return null;
+    }
+  } catch (error) {
+    console.error(`Error fetching user details for UID ${uid}:`, error);
+    throw error;
+  }
 };
