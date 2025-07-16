@@ -25,7 +25,6 @@ export default function Login() {
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector((state: RootState) => state.auth.isAuthenticated);
   const isLoadingAuth = useAppSelector((state) => state.auth.loading);
-
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };

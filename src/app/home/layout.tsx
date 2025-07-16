@@ -6,6 +6,8 @@ import { RootState } from '@/store/store';
 import { useRouter } from 'next/navigation';
 import { authListener } from '@/lib/firebase/auth';
 import Loader from '@/components/Loader';
+import { IoMdAdd } from "react-icons/io";
+import Link from 'next/link';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -30,12 +32,26 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     )
   }
   return (
-    <div className="min-h-screen lendingPage flex flex-col">
-      <NavBar />
-      <div className="pt-24"></div> 
-      <div className="w-full md:w-8/17 p-5 bg-white rounded-lg ">
+    <div className="h-screen lendingPage flex flex-col ">
+     
+       <NavBar />
+     
+      <div className='flex flex-1 overflow-hidden space-x-3  p-4 pb-0'>
+        <div className='hidden sm:block sm:w-1/2 md:w-1/3  p-5 overflow-auto'>
+        chat list
+        </div>
+        <div className="w-full sm:w-1/2 md:w-2/3  rounded-lg overflow-auto scrollbar-hidden-style  backdrop-blur-md border ">
         {children}
       </div>
+      <div className='hidden sm:block sm:w-1/2 md:w-1/3   p-5 overflow-auto'>
+        Suggestions
+      </div>
+      </div>
+      
+      <Link href="/home/create" 
+       className="fixed bottom-3 right-3 h-12 w-12 rounded-full bg-gradient-to-tr from-orange-500  to-orange-900 flex items-center justify-center text-white shadow-lg">
+        <IoMdAdd />
+    </Link>
     </div>
   );
 }

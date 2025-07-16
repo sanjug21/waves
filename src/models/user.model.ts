@@ -1,4 +1,3 @@
-import { Timestamp } from "firebase/firestore";
 
 export interface User{
     uid: string;
@@ -10,7 +9,8 @@ export interface User{
     online:boolean;
     followers: string[];
     following: string[];
-    createdAt: Timestamp;
+    posts:string[];
+    createdAt: string;
 
 }
 

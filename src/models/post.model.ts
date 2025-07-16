@@ -1,5 +1,4 @@
 
-import {Timestamp} from 'firebase/firestore';
 
 export interface Post{
     postId: string;
@@ -8,8 +7,8 @@ export interface Post{
     postUrl: string;
     likes: string[];
     comments: string[];
-    createdAt: Timestamp;
-    updatedAt?: Timestamp;
+    createdAt: string;
+    updatedAt?: string;
 }
 
 export interface PostState {

@@ -5,3 +5,19 @@
   background-size: cover;
   background-position: center;
 }
+
+
+/* Add this to your global CSS file (e.g., src/app/globals.css in Next.js 13+) */
+
+/* For Webkit browsers (Chrome, Safari, newer Edge) */
+.scrollbar-hidden-style::-webkit-scrollbar {
+    display: none;
+    width: 0; /* Ensures no width is taken up */
+    height: 0; /* Ensures no height is taken up for horizontal scrollbars */
+}
+
+/* For IE, Edge (older) and Firefox */
+.scrollbar-hidden-style {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
