@@ -46,7 +46,7 @@ export const registerUser = async (dispatch: AppDispatch, email: string, passwor
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const firebaseUser = userCredential.user;
 
-    const userForFirestore = {
+    const userForFirestore:User = {
       uid: firebaseUser.uid,
       email: firebaseUser.email ?? '',
       name,
@@ -57,7 +57,7 @@ export const registerUser = async (dispatch: AppDispatch, email: string, passwor
       followers: [],
       following: [],
       posts:[],
-      createdAt: serverTimestamp(),
+      createdAt: serverTimestamp() as any,
     };
 
     await setDoc(doc(db, 'Users', userForFirestore.uid), userForFirestore);
