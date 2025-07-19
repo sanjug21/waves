@@ -6,6 +6,8 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { RootState } from '@/store/store';
 import { loginUser } from '@/lib/firebase/auth';
 import Loader from '@/components/Loader';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 type FormErrors = {
   email?: string;
@@ -25,6 +27,7 @@ export default function Login() {
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector((state: RootState) => state.auth.isAuthenticated);
   const isLoadingAuth = useAppSelector((state) => state.auth.loading);
+
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
@@ -44,7 +47,7 @@ export default function Login() {
   };
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault(); 
+    e.preventDefault();
 
     const newErrors: FormErrors = {};
 
@@ -72,9 +75,18 @@ export default function Login() {
 
     try {
       await loginUser(dispatch, email, password);
-
     } catch (err: any) {
-      setErrors({ general: err.message || 'Login failed. Please check your credentials.' });
+      const errorMessage = err.message || 'Login failed. Please check your credentials.';
+      toast.error(errorMessage, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
     } finally {
       setIsLoggingIn(false);
     }
@@ -87,20 +99,18 @@ export default function Login() {
 
   const isLoginButtonDisabled = password.length < 6 || isLoggingIn;
 
-  if(isAuthenticated || isLoadingAuth) {
-    return (
-      <Loader/>
-    );
+  if (isAuthenticated || isLoadingAuth) {
+    return <Loader />;
   }
 
   return (
     <div className="min-h-screen bg-cover bg-center lendingPage flex flex-col items-center justify-center p-4 overflow-hidden font-sans">
+      <ToastContainer />
       <div className="relative bg-opacity-15 backdrop-blur-xl rounded-3xl shadow-2xl border border-blue-700 border-opacity-30 p-8 max-w-md w-full text-center animate-fade-in flex flex-col items-center justify-center">
         <h1 className="text-white text-4xl sm:text-5xl font-semibold mb-8 drop-shadow-md">
           Welcome to <span className="bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">Waves</span>
         </h1>
 
-        
         <form onSubmit={handleLogin} className="space-y-4 w-full">
           <div>
             <label htmlFor="email" className={baseLabelClass}>Email</label>
@@ -140,12 +150,10 @@ export default function Login() {
             </button>
             {errors.password && <p className="text-red-400 text-sm mt-1 text-left">{errors.password}</p>}
           </div>
-
-          {errors.general && <p className="text-red-400 text-sm mt-2">{errors.general}</p>}
-
+          
           <div className="relative w-full">
             <button
-              type="submit" 
+              type="submit"
               disabled={isLoginButtonDisabled}
               title={isLoginButtonDisabled && !isLoggingIn ? 'Password must be at least 6 characters long.' : ''}
               className={`group relative mt-10 w-full border-2 text-lg font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl active:scale-95 focus:outline-none focus:ring-2 focus:ring-opacity-75
