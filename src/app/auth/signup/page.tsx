@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
@@ -7,6 +7,8 @@ import { RootState } from '@/store/store';
 import { registerUser } from '@/lib/firebase/auth';
 import { useRouter } from 'next/navigation';
 import Loader from '@/components/Loader';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 type FormErrors = {
   username?: string;
@@ -32,7 +34,7 @@ export default function SignUp() {
 
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector((state: RootState) => state.auth.isAuthenticated);
-  const isLoadingAuth = useAppSelector((state: RootState) => state.auth.loading);
+  const isLoadingAuth = useAppSelector((state) => state.auth.loading);
   const router = useRouter();
 
   const toggleConfirmPasswordVisibility = () => {
@@ -104,9 +106,9 @@ export default function SignUp() {
 
     try {
       await registerUser(dispatch, email, password, username);
-      
+      toast.success('Account created successfully! Redirecting...');
     } catch (err: any) {
-      setErrors({ general: err.message || 'Sign Up failed. Please try again.' });
+      toast.error(err.message || 'Sign Up failed. Please try again.');
     } finally {
       setIsSigningUp(false);
     }
@@ -132,16 +134,26 @@ export default function SignUp() {
   };
 
   if(isAuthenticated || isLoadingAuth) {
-    return (
-      <Loader/>
-    );
+    return <Loader />;
   }
 
   return (
     <div className="min-h-screen bg-cover bg-center lendingPage flex flex-col items-center justify-center p-4 overflow-hidden font-sans">
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <div className="relative bg-opacity-15 backdrop-blur-xl rounded-3xl shadow-2xl border border-blue-700 border-opacity-30 p-8 max-w-md w-full text-center transform transition-all duration-500 ease-out animate-fade-in flex flex-col items-center justify-center ">
         <h1 className="relative z-10 text-white text-4xl sm:text-5xl font-semibold mb-8 leading-tight drop-shadow-md text-center">
-          Welcome to <span className="bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">Waves</span>
+          Join <span className="bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">Waves</span>
         </h1>
         <form onSubmit={handleSignUp} className="space-y-4 w-full" noValidate>
           <div>
@@ -217,8 +229,6 @@ export default function SignUp() {
             </button>
             {errors.confirmPassword && <p className="text-red-400 text-sm mt-1 text-left">{errors.confirmPassword}</p>}
           </div>
-
-          {errors.general && <p className="text-red-400 text-sm mt-2">{errors.general}</p>}
 
           <button
             type="submit"

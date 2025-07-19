@@ -36,14 +36,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
      
        <NavBar />
      
-      <div className='flex flex-1 overflow-hidden space-x-3  p-4 pb-0'>
-        <div className='hidden sm:block sm:w-1/2 md:w-1/3  p-5 overflow-auto'>
+      <div className='flex flex-1 overflow-hidden space-x-3  p-4 pb-0 sm:hidd'>
+        <div className='hidden lg:block sm:w-1/2 md:w-1/3  p-5 overflow-auto'>
         chat list
         </div>
-        <div className="w-full sm:w-1/2 md:w-2/3  rounded-lg overflow-auto scrollbar-hidden-style  backdrop-blur-md border ">
+        <div className="w-full lg:w-2/3  rounded-lg overflow-auto scrollbar-hidden-style  backdrop-blur-md border ">
         {children}
       </div>
-      <div className='hidden sm:block sm:w-1/2 md:w-1/3   p-5 overflow-auto'>
+      <div className='hidden lg:block sm:w-1/2 md:w-1/3   p-5 overflow-auto'>
         Suggestions
       </div>
       </div>

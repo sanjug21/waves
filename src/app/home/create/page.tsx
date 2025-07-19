@@ -1,8 +1,10 @@
 'use client';
 import { useAppSelector } from "@/store/hooks";
 import { useRouter } from "next/navigation";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { createPost } from "@/lib/firebase/posts";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function CreatePost() {
   const user = useAppSelector((state) => state.auth.user);
@@ -12,19 +14,6 @@ export default function CreatePost() {
   const [loading, setLoading] = useState(false);
   const [description, setDescription] = useState<string>('');
   const router = useRouter();
-
-  const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
-  const [snackbarType, setSnackbarType] = useState<'success' | 'error' | null>(null);
-
-  useEffect(() => {
-    if (snackbarMessage) {
-      const timer = setTimeout(() => {
-        setSnackbarMessage(null);
-        setSnackbarType(null);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [snackbarMessage]);
 
   const handleDivClick = () => {
     inputRef.current?.click();
@@ -46,14 +35,12 @@ export default function CreatePost() {
 
   const uploadPost = async () => {
     if (!user?.uid) {
-      setSnackbarMessage("You need to be logged in to create a wave.");
-      setSnackbarType('error');
+      toast.error("You need to be logged in to create a wave.");
       return;
     }
 
     if (!description.trim() && !selectedImage) {
-      setSnackbarMessage("Your wave needs a description or an image.");
-      setSnackbarType('error');
+      toast.error("Your wave needs a description or an image.");
       return;
     }
 
@@ -68,22 +55,20 @@ export default function CreatePost() {
       );
 
       if (posted) {
+        toast.success("Wave created successfully!");
         setDescription('');
         setSelectedImage(null);
         if (inputRef.current) {
           inputRef.current.value = "";
         }
-        setSnackbarMessage("Wave created successfully!");
-        setSnackbarType('success');
+       
       } else {
+        toast.error("Failed to create wave. Please try again.");
         console.error("Post creation failed, but no error was thrown by the service.");
-        setSnackbarMessage("Failed to create wave. Please try again.");
-        setSnackbarType('error');
       }
     } catch (err: any) {
       console.error('Error uploading post:', err);
-      setSnackbarMessage(`Failed to create wave: ${err.message || "An unknown error occurred."}`);
-      setSnackbarType('error');
+      toast.error(`Failed to create wave: ${err.message || "An unknown error occurred."}`);
     } finally {
       setLoading(false);
     }
@@ -97,24 +82,23 @@ export default function CreatePost() {
 
   return (
     <div className="w-full h-full bg-gray-50 flex justify-center items-start overflow-y-auto relative">
-       {loading && (
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
+      {loading && (
         <div className="fixed inset-0 w-full h-full bg-gray-500/50 backdrop-blur-[2px] flex justify-center items-center z-50">
           <div className="loader"></div>
         </div>
-
       )}
-
-      {snackbarMessage && (
-  <div
-    className={`fixed top-4 left-0 right-0 p-4 rounded-md shadow-lg text-white text-center z-50 transition-all duration-300
-      ${snackbarType === 'success' ? 'bg-green-500' : 'bg-red-500'}
-      ${snackbarMessage ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full'}
-    `}
-    role="alert"
-  >
-    {snackbarMessage}
-  </div>
-)}
 
       <div className="w-full max-w-full bg-white rounded-lg shadow-lg">
         <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-t-lg">
@@ -158,7 +142,6 @@ export default function CreatePost() {
                 alt="Preview"
                 className="w-full max-h-[50vh] object-contain rounded-md border border-gray-300 bg-gray-500 shadow-sm"
               />
-
               <button
                 className="px-4 py-2 w-full text-red-600 border border-red-600 rounded-md hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200"
                 onClick={handleRemoveImage}

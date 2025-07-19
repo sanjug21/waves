@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { Post } from '@/models/post.model';
 import { getAllPosts } from '@/lib/firebase/posts';
+import PostCard from '@/components/PostCard';
+import Loader from '@/components/Loader'; // Assuming you have a Loader component
 
 const Home: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -9,6 +11,7 @@ const Home: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // This function sets up a real-time listener for posts.
     const unsubscribe = getAllPosts(
       (newPosts: Post[]) => {
         setPosts(newPosts);
@@ -21,45 +24,39 @@ const Home: React.FC = () => {
       }
     );
 
+    // This cleanup function will run when the component unmounts,
+    // preventing memory leaks by unsubscribing from the listener.
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, []); // The empty dependency array ensures this effect runs only once on mount.
 
+  // Display a loader while data is being fetched
+  if (loading) {
+    return <Loader />;
+  }
 
+  // Display an error message if the fetch fails
+  if (error) {
+    return <p className="text-center text-red-500 mt-10">{error}</p>;
+  }
 
   return (
-    <div className="max-w-xl mx-auto my-5 p-5 border border-gray-200 rounded-lg shadow-md">
-      <h1 className="text-center mb-6 text-3xl font-bold text-gray-800">Latest Posts</h1>
-      {posts.length === 0 ? (
-        <p className="text-center text-gray-500">No posts available yet. Be the first to create one!</p>
-      ) : (
-        <div className="space-y-5"> {/* Adds vertical space between post items */}
-          {posts.map((post) => (
-            <div key={post.postId} className="mb-5 p-4 border border-gray-300 rounded-md bg-white shadow-sm">
-              <div className="flex items-center mb-3">
-                {post.dp && <img src={post.dp} alt="Profile" className="w-10 h-10 rounded-full mr-3 object-cover" />}
-                <h3 className="m-0 text-lg font-semibold text-blue-600">{post.name}</h3>
-              </div>
-              <p className="leading-relaxed text-gray-700">{post.description}</p>
-              {post.postUrl && (
-                <div className="text-center mt-4">
-                  <img src={post.postUrl} alt="Post content" className="max-w-full h-auto rounded-md border border-gray-200" />
-                </div>
-              )}
-              <div className="flex justify-between mt-4 text-sm text-gray-600">
-                <span>Likes: {post.likes?.length || 0}</span>
-                <span>Comments: {post.comments?.length || 0}</span>
-              </div>
-              {post.createdAt && (
-                <p className="text-xs text-gray-400 text-right mt-2">
-                  Posted on: {new Date(post.createdAt).toLocaleString()}
-                </p>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+    <div className="w-full h-full overflow-y-auto scrollbar-hidden-style">
+      <div className="w-full p-4 mx-auto">
+        {posts.length === 0 ? (
+          <div className="text-center text-gray-400 dark:text-gray-500 mt-20">
+            <h2 className="text-2xl font-semibold">No Posts Yet</h2>
+            <p className="mt-2">It's quiet in here... be the first to share something!</p>
+          </div>
+        ) : (
+          <div className="space-y-6 w-full"> 
+            {posts.map((post) => (
+               <PostCard key={post.postId} post={post} />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
