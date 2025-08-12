@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 .lendingPage {
-  background-image: url('/back.jpeg');
+  background-image: url('/back.png');
   background-size: cover;
   background-position: center;
 }
@@ -84,3 +84,5 @@
   }
 }
   
+/* rgb(0, 7, 35)
+rgb(0, 6, 34) */

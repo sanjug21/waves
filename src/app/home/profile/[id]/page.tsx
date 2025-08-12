@@ -1,7 +1,4 @@
 'use client';
-import { getUserDetails } from "@/lib/firebase/auth";
-import { User } from "@/models/user.model";
-import { useAppSelector } from "@/store/hooks";
 import { useState, useEffect } from "react";
 
 
@@ -14,64 +11,20 @@ interface ProfilePageProps {
 export default function ProfilePage({ params }: ProfilePageProps) {
     const { id } = params;
 
-    const [profileUser, setProfileUser] = useState<User | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    const currentUserFromStore = useAppSelector((state) => state.auth.user);
 
     const [admin, setAdmin] = useState(false);
 
-    useEffect(() => {
-        const fetchAndSetProfileUser = async () => {
-            setIsLoading(true);
-            setError(null);
-
-            if (currentUserFromStore && currentUserFromStore.uid === id) {
-                setProfileUser(currentUserFromStore);
-                setAdmin(true);
-                setIsLoading(false);
-                return;
-            }
-
-            try {
-                const fetchedUser = await getUserDetails(id);
-                if (fetchedUser) {
-                    setProfileUser(fetchedUser);
-                } else {
-                    setError("User not found.");
-                    setProfileUser(null);
-                }
-            } catch (err: any) {
-                console.error("Error fetching profile user:", err);
-                setError(err.message || "Failed to load user profile.");
-                setProfileUser(null);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        if (id) {
-            fetchAndSetProfileUser();
-        } else {
-            setError("User ID is missing from the URL.");
-            setIsLoading(false);
-        }
-
-    }, [id, currentUserFromStore]);
+   
 
     
 
     const defImage = '/def.png';
 
-    const isFollowing = profileUser?.followers && currentUserFromStore?.uid 
-    ? profileUser.followers.includes(currentUserFromStore.uid)
-    : false;
 
 
     return (
         <div className="rounded-lg space-y-3">
-                {/* profile section */}
+                {/* profile section
                 <div className="flex p-2 w-full h-60 space-x-4 bg-gray-300 rounded-lg">
                     <img className="w-56 h-56 " src={profileUser?.dp?profileUser?.dp:defImage} alt="" />
                     <div className="w-full p-4 space-y-3">
@@ -125,7 +78,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
               } */}
             {/* post section */}
 
-            <div className="p-4 sm:p-6 space-y-4">
+            {/* <div className="p-4 sm:p-6 space-y-4">
                     
                     {profileUser?.posts.length === 0 ? (
                         <p className="text-gray-600 dark:text-gray-400 text-center py-8">
@@ -139,7 +92,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
                         </div>
                     )}
                 </div>
-            
+             */} *
 
            
         </div>
