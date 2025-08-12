@@ -1,5 +1,5 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {User, AuthState} from '@/models/user.model';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AuthState, UserDetails } from '@/lib/types';
 
 const initialState: AuthState = {
   user: null,
@@ -9,33 +9,34 @@ const initialState: AuthState = {
 };
 
 const authSlice = createSlice({
-    name: 'auth',
-    initialState,
-    reducers: {
-        setLoading(state, action: PayloadAction<boolean>) {
-            state.loading = action.payload;
-        },
-
-        setError(state, action: PayloadAction<string | null>) {
-            state.error = action.payload;
-        },
-
-        setUser(state, action: PayloadAction<User | null>) {
-            state.user = action.payload;
-            state.isAuthenticated = true;
-            state.loading = false;
-            state.error = null;
-        },
-
-        clearUser(state) {
-            state.user = null;
-            state.isAuthenticated = false;
-            state.loading = false;
-            state.error = null;
-        }
+  name: 'auth',
+  initialState,
+  reducers: {
+    setAuthenticated: (state, action: PayloadAction<UserDetails>) => {
+      state.user = action.payload;
+      state.isAuthenticated = true;
+      state.loading = false;
+      state.error = null;
     },
-})
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+      state.error = null;
+    },
+    setError: (state, action: PayloadAction<string>) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
+    clearError: (state) => {
+      state.error = null;
+    },
+    setLoggedOut: (state) => {
+      state.user = null;
+      state.isAuthenticated = false;
+      state.loading = false;
+      state.error = null;
+    },
+  },
+});
 
-export const { setLoading, setError, setUser, clearUser } = authSlice.actions;
-
+export const { setAuthenticated, setLoading, setError, clearError, setLoggedOut } = authSlice.actions;
 export default authSlice.reducer;

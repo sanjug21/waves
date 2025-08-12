@@ -1,17 +1,20 @@
 'use client';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { RootState } from '@/store/store';
-import { registerUser } from '@/lib/firebase/auth';
 import { useRouter } from 'next/navigation';
 import Loader from '@/components/Loader';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useAppSelector } from '@/store/hooks';
+import { z, ZodError } from 'zod';
+import { SignupSchema, passwordSchema } from '@/lib/schema/user.schema';
+import API from '@/utils/api';
+import axios from 'axios';
+import { set } from 'mongoose';
 
 type FormErrors = {
-  username?: string;
+  name?: string;
   email?: string;
   password?: string;
   confirmPassword?: string;
@@ -19,7 +22,10 @@ type FormErrors = {
 };
 
 export default function SignUp() {
-  const [username, setUsername] = useState('');
+  const router = useRouter();
+  const { isAuthenticated, loading } = useAppSelector((state) => state.auth);
+
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -27,88 +33,63 @@ export default function SignUp() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSigningUp, setIsSigningUp] = useState(false);
 
-  const usernameRef = useRef<HTMLInputElement>(null);
+  const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
 
-  const dispatch = useAppDispatch();
-  const isAuthenticated = useAppSelector((state: RootState) => state.auth.isAuthenticated);
-  const isLoadingAuth = useAppSelector((state) => state.auth.loading);
-  const router = useRouter();
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.replace('/home');
+    }
+  }, [isAuthenticated, router]);
+
+  if (loading || isAuthenticated) {
+    return <Loader />;
+  }
 
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
-
-  const validateEmail = (email: string) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
-
-  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(e.target.value);
-    setErrors({});
-  };
-
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-    setErrors({});
-  };
-
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-    setErrors({});
-  };
-
-  const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setConfirmPassword(e.target.value);
-    setErrors({});
-  };
+  
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const newErrors: FormErrors = {};
-
-    if (!username.trim()) {
-      newErrors.username = 'Username is required.';
-    }
-
-    if (!email.trim()) {
-      newErrors.email = 'Email is required.';
-    } else if (!validateEmail(email)) {
-      newErrors.email = 'Invalid email format.';
-    }
-
-    if (!password.trim()) {
-      newErrors.password = 'Password is required.';
-    } else if (password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters.';
-    }
-
-    if (!confirmPassword.trim()) {
-      newErrors.confirmPassword = 'Confirm Password is required.';
-    } else if (password !== confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match.';
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      if (newErrors.username) usernameRef.current?.focus();
-      else if (newErrors.email) emailRef.current?.focus();
-      else if (newErrors.password) passwordRef.current?.focus();
-      else if (newErrors.confirmPassword) confirmPasswordRef.current?.focus();
-      return;
-    }
-
-    setIsSigningUp(true);
     setErrors({});
+    setIsSigningUp(true);
 
     try {
-      await registerUser(dispatch, email, password, username);
-      toast.success('Account created successfully! Redirecting...');
+      const fullSchema = SignupSchema.extend({
+        confirmPassword: z.string().min(1, 'Confirm Password is required.'),
+      }).refine((data) => data.password === data.confirmPassword, {
+        message: 'Passwords do not match.',
+        path: ['confirmPassword'],
+      });
+
+      fullSchema.parse({ name, email, password, confirmPassword });
+
+      await API.post('/auth/signup', { name, email, password });
+      
+      toast.success('Account created successfully! Redirecting to login...');
+      router.push('/auth/login');
     } catch (err: any) {
-      toast.error(err.message || 'Sign Up failed. Please try again.');
+      if (err instanceof ZodError) {
+        const newErrors: FormErrors = {};
+        err.issues.forEach(issue => {
+          if (issue.path[0]) {
+            newErrors[issue.path[0] as keyof FormErrors] = issue.message;
+          }
+        });
+        setErrors(newErrors);
+      } else if (axios.isAxiosError(err)) {
+        const apiError = err.response?.data?.message || 'Sign Up failed. Please try again.';
+        setErrors({ general: apiError });
+        toast.error(apiError);
+      } else {
+        const genericError = err.message || 'An unexpected error occurred.';
+        setErrors({ general: genericError });
+        toast.error(genericError);
+      }
     } finally {
       setIsSigningUp(false);
     }
@@ -119,57 +100,30 @@ export default function SignUp() {
 
   const baseLabelClass = 'block text-sm font-medium text-gray-200 mb-1 text-left';
 
-  const isSignUpButtonDisabled = isSigningUp || !username.trim() || !email.trim() || password.length < 6 || password !== confirmPassword;
-
-  const getDisabledReason = () => {
-    if (isSigningUp) return 'Signing up...';
-    if (!username.trim()) return 'Username is required.';
-    if (!email.trim()) return 'Email is required.';
-    if (!validateEmail(email)) return 'Invalid email format.';
-    if (!password.trim()) return 'Password is required.';
-    if (password.length < 6) return 'Password must be at least 6 characters.';
-    if (!confirmPassword.trim()) return 'Confirm Password is required.';
-    if (password !== confirmPassword) return 'Passwords do not match.';
-    return '';
-  };
-
-  if(isAuthenticated || isLoadingAuth) {
-    return <Loader />;
-  }
-
   return (
     <div className="min-h-screen bg-cover bg-center lendingPage flex flex-col items-center justify-center p-4 overflow-hidden font-sans">
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
       <div className="relative bg-opacity-15 backdrop-blur-xl rounded-3xl shadow-2xl border border-blue-700 border-opacity-30 p-8 max-w-md w-full text-center transform transition-all duration-500 ease-out animate-fade-in flex flex-col items-center justify-center ">
         <h1 className="relative z-10 text-white text-4xl sm:text-5xl font-semibold mb-8 leading-tight drop-shadow-md text-center">
           Join <span className="bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">Waves</span>
         </h1>
         <form onSubmit={handleSignUp} className="space-y-4 w-full" noValidate>
           <div>
-            <label htmlFor="username" className={baseLabelClass}>Username</label>
+            <label htmlFor="name" className={baseLabelClass}>Name</label>
             <input
-              ref={usernameRef}
+              ref={nameRef}
               type="text"
-              id="username"
-              className={`${baseInputClass} ${errors.username ? 'border-2 border-red-600' : ''}`}
-              placeholder="Enter your username"
-              aria-label="Username"
-              value={username}
-              onChange={handleUsernameChange}
+              id="name"
+              className={`${baseInputClass} ${errors.name ? 'border-2 border-red-600' : ''}`}
+              placeholder="Enter your name"
+              aria-label="Name"
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+                setErrors({});
+              }}
               disabled={isSigningUp}
             />
-            {errors.username && <p className="text-red-400 text-sm mt-1 text-left">{errors.username}</p>}
+            {errors.name && <p className="text-red-400 text-sm mt-1 text-left">{errors.name}</p>}
           </div>
 
           <div>
@@ -182,13 +136,16 @@ export default function SignUp() {
               placeholder="Enter your email"
               aria-label="Email"
               value={email}
-              onChange={handleEmailChange}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setErrors({});
+              }}
               disabled={isSigningUp}
             />
             {errors.email && <p className="text-red-400 text-sm mt-1 text-left">{errors.email}</p>}
           </div>
 
-          <div>
+          <div className="relative">
             <label htmlFor="password" className={baseLabelClass}>Password</label>
             <input
               ref={passwordRef}
@@ -198,7 +155,10 @@ export default function SignUp() {
               placeholder="Enter your password"
               aria-label="Password"
               value={password}
-              onChange={handlePasswordChange}
+              onChange={(e)=>{
+                setPassword(e.target.value);
+                setErrors({});
+              }}
               disabled={isSigningUp}
             />
             {errors.password && <p className="text-red-400 text-sm mt-1 text-left">{errors.password}</p>}
@@ -214,7 +174,10 @@ export default function SignUp() {
               placeholder="Confirm your password"
               aria-label="Confirm Password"
               value={confirmPassword}
-              onChange={handleConfirmPasswordChange}
+              onChange={(e) => {
+                setConfirmPassword(e.target.value);
+                setErrors({});
+              }}
               disabled={isSigningUp}
             />
             <button
@@ -230,12 +193,12 @@ export default function SignUp() {
             {errors.confirmPassword && <p className="text-red-400 text-sm mt-1 text-left">{errors.confirmPassword}</p>}
           </div>
 
+          
           <button
             type="submit"
-            disabled={isSignUpButtonDisabled}
-            title={isSignUpButtonDisabled ? getDisabledReason() : ''}
+            disabled={isSigningUp}
             className={`group relative block mt-10 w-full border-2 py-3 px-8 rounded-full text-lg font-semibold transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl active:scale-95 focus:outline-none focus:ring-2 focus:ring-opacity-75
-              ${isSignUpButtonDisabled
+              ${isSigningUp
                 ? 'border-gray-600 text-gray-500 cursor-not-allowed'
                 : 'border-blue-400 text-blue-300 hover:border-blue-300 hover:text-white hover:bg-blue-600 focus:ring-blue-400'
               }`}

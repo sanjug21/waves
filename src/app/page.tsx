@@ -1,39 +1,25 @@
 "use client";
 
-import Loader from "@/components/Loader";
-import { authListener, logoutUser } from "@/lib/firebase/auth";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FiArrowLeft } from "react-icons/fi"; 
+import { FiArrowLeft } from "react-icons/fi";
+import { useAppSelector } from "@/store/hooks"; 
 
 export default function Home() {
-  const [showOptions, setShowOptions] = useState(false);
-
-  const user=useAppSelector((state)=>state.auth.user);
-  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const router = useRouter();
-  const dispatch = useAppDispatch();
-  const isLoadingAuth = useAppSelector((state) => state.auth.loading);
+  const [showOptions, setShowOptions] = useState(false);
+  const { isAuthenticated, user } = useAppSelector((state) => state.auth);
+
   useEffect(() => {
-  
-    const unsubscribe = authListener(dispatch);
-    if(isAuthenticated) {
+    if (isAuthenticated) {
       router.replace('/home');
     }
-        return () => unsubscribe();
-  }, [isAuthenticated, dispatch, router]);
+  }, [isAuthenticated, router]);
 
   const toggle = () => {
     setShowOptions(!showOptions);
   };
-
-  if( isLoadingAuth) {
-    return (
-      <Loader/>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-cover bg-center lendingPage flex flex-col items-center justify-center p-4 overflow-hidden font-sans">
@@ -46,7 +32,7 @@ export default function Home() {
           <div className="relative z-10 flex flex-col gap-6 text-center w-full opacity-100 animate-fade-in-up">
             <button
               onClick={toggle}
-              className="mb-4 p-2  rounded-full text-gray-400 hover:text-white  transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 mx-auto"
+              className="mb-4 p-2 rounded-full text-gray-400 hover:text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 mx-auto"
               aria-label="Go back"
             >
               <FiArrowLeft className="h-8 w-8" />
