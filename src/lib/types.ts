@@ -24,3 +24,21 @@ export interface SignupCredentials extends LoginCredentials {
   name: string;
 }
 
+
+export interface Post {
+    _id: string;
+    userId: {
+        _id: string;
+        name: string;
+        dp: string;
+    };
+    description?: string;
+    imageUrl?: string;
+    publicId?: string;
+    likes: string[];
+    comments: string[];
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface SearchedUser extends UserDetails {}
