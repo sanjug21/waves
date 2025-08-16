@@ -21,7 +21,6 @@ export const NavBar = () => {
   const [searchText, setSearchText] = useState<string>('');
   const [showProfileMenu, setShowProfileMenu] = useState<boolean>(false);
   const [debouncedSearchText, setDebouncedSearchText] = useState<string>('');
-
   const [searchResults, setSearchResults] = useState<SearchedUser[] | null>(null);
   const [searchLoading, setSearchLoading] = useState<boolean>(false);
   const [searchError, setSearchError] = useState<string | null>(null);
