@@ -8,20 +8,21 @@ import Link from 'next/link';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   
+  
   return (
     <div className="h-screen lendingPage flex flex-col ">
      
        <NavBar />
      
-      <div className='flex flex-1 overflow-hidden space-x-3  p-4 pb-0 sm:hidd'>
+      <div className='flex flex-1 overflow-hidden  bg-gradient-to-br from-blue-50 to-blue-100'>
         <div className='hidden lg:block sm:w-1/2 md:w-1/3  p-5 overflow-auto'>
-        chat list
+        Suggestions
         </div>
-        <div className="w-full lg:w-2/3  rounded-lg overflow-auto scrollbar-hidden-style  backdrop-blur-md border ">
+        <div className="w-full  lg:w-2/3   overflow-auto scrollbar-hidden-style   border-2 border-[rgb(0,12,60)] ">
         {children}
       </div>
-      <div className='hidden lg:block sm:w-1/2 md:w-1/3   p-5 overflow-auto'>
-        Suggestions
+      <div className='hidden sm:block sm:w-2/5  lg:w-1/3   p-5 overflow-auto'>
+        chat list
       </div>
       </div>
       

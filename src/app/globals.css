@@ -6,6 +6,12 @@
   background-position: center;
 }
 
+ .NavBg {
+  background-image: url('/back.png');
+    background-size: cover;
+    background-position: center;
+}
+
 
 /* Make the scrollbar appear only on hover */
 .scrollbar-hidden-style {
@@ -96,5 +102,5 @@
   
 /* rgb(0, 7, 35)
 rgb(0, 6, 34) 
-rgb(0,12,60
+rgb(0,12,60)
 */

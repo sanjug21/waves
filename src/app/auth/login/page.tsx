@@ -42,7 +42,7 @@ if(loading || isAuthenticated){
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     dispatch(clearError());
-    // dispatch(setLoading(true));
+     dispatch(setLoading(true));
 
     try {
       LoginSchema.parse({ email, password });

@@ -27,7 +27,6 @@ export const NavBar = () => {
   const [searchError, setSearchError] = useState<string | null>(null);
 
   const defaultDp = "/def.png";
-
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearchText(searchText);
@@ -141,7 +140,7 @@ export const NavBar = () => {
 
   return (
     <>
-      <nav className="z-50 p-3 text-white shadow-cyan-800 shadow-lg">
+      <nav className="z-50 p-3 text-white shadow-cyan-800 shadow-lg NavBg">
         <div className="mx-auto flex items-center justify-between">
           <Link href="/home" className="text-3xl font-medium bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text" onClick={clearSearch}>
             Waves
@@ -220,7 +219,7 @@ export const NavBar = () => {
             <div className="max-w-md mx-auto">
               {searchResults.map((result) => (
                 <Link
-                  href={`/profile/${result._id}`}
+                  href={`/home/profile/${result._id}`}
                   key={result._id}
                   onClick={clearSearch}
                 >

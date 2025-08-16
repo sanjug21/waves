@@ -6,7 +6,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useAppSelector } from "@/store/hooks";
 import axios from "axios";
 import API from "@/utils/api";
-import { PostSchema } from "@/lib/schema/post.schema";
 
 export default function CreatePost() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -50,9 +49,9 @@ export default function CreatePost() {
     if (selectedImage) {
       formData.append('image', selectedImage);
     }
-    //  if (userId) {
-    //   formData.append('userId', userId); 
-    // }
+     if (userId) {
+      formData.append('userId', userId); 
+    }
     try {
 
       const response=await API.post('/posts/create',formData);
@@ -81,13 +80,13 @@ export default function CreatePost() {
   const userName = user?.name ;
 
   return (
-    <div className="w-full h-full bg-gray-50 flex justify-center items-start overflow-y-auto relative">
+    <div className="w-full h-full  flex justify-center items-start overflow-y-auto relative p-4 bg-blue-200">
       {loading && (
         <div className="fixed inset-0 w-full h-full bg-gray-500/50 backdrop-blur-[2px] flex justify-center items-center z-50">
           <div className="loader"></div>
         </div>
       )}
-      <div className="w-full max-w-full bg-white rounded-lg shadow-lg">
+      <div className="w-full max-w-full bg-white rounded-xl shadow-lg">
         <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-t-lg">
           <img
             src={userDp}

@@ -3,13 +3,16 @@ import User from "@/lib/models/User";
 import { dbConnect } from "@/lib/dbConnect";
 
 export async function GET(req: NextRequest) {
-    
+    const {searchParams}=req.nextUrl;
+    const searchQuery = searchParams.get("query");
+
+    if (!searchQuery) {
+        return new Response("Query is required", { status: 400 });
+    }
+
     try {
         await dbConnect();
-        
-        const url = new URL(req.url);
-        
-        const searchQuery = url.searchParams.get('query');
+    
 
         if (!searchQuery) {
             return NextResponse.json({ success: true, users: [] }, { status: 200 });
