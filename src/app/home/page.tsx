@@ -9,7 +9,6 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [posts, setPosts] = useState([]);
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const fetchPosts = useCallback(async () => {
     try {
@@ -42,8 +41,8 @@ export default function Home() {
   }
 
   return (
-    <div className="w-full h-full overflow-y-auto scrollbar-hidden-style bg-gray-400">
-      <div className="w-full p-4 mx-auto mt-2">
+    <div className="w-full h-full overflow-y-auto scrollbar-hidden-style ">
+      <div className="w-full p-2 pl-4 mx-auto mt-2">
        
         {posts.length === 0 ? (
           <div className="text-center text-gray-400 dark:text-gray-500 mt-20">

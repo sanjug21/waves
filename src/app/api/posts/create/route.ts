@@ -6,27 +6,21 @@ import { uploadImage } from "@/utils/post";
 import { NextRequest, NextResponse } from "next/server";
 import { ZodError } from "zod";
 import { verifyAccessToken } from "@/utils/auth";
+import { log } from "node:console";
 
 export async function POST(req: NextRequest) {
   try {
-    const accessToken = req.cookies.get('accessToken')?.value;
+   
 
-    if (!accessToken) {
-      return NextResponse.json({ message: "Authentication token not found." }, { status: 401 });
-    }
-
-    const decodedPayload = verifyAccessToken(accessToken);
-    if (!decodedPayload) {
-      return NextResponse.json({ message: "Invalid or expired access token." }, { status: 401 });
-    }
-
-    const userId = decodedPayload.id;
+    console.log("hello");
+    
     await dbConnect();
 
     const formData = await req.formData();
     const description = formData.get('description') as string;
     const imageFile = formData.get('image') as File | null;
-
+    const userId = formData.get('userId') as string;
+    console.log(userId)
     let imageUrl = '';
     let publicId = '';
 

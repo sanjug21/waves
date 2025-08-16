@@ -42,3 +42,14 @@ export interface Post {
 }
 
 export interface SearchedUser extends UserDetails {}
+
+export interface ProfilePageProps {
+  params: {
+    id: string;
+  };
+}
+
+export interface UserProfile extends UserDetails {
+  followers: string[];
+  following: string[];
+}
