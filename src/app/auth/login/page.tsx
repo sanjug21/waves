@@ -29,10 +29,13 @@ export default function Login() {
       router.replace('/home');
     }
   }, [isAuthenticated,router]);
-if(loading || isAuthenticated){
-  return <Loader/>;
+  if(isAuthenticated && loading){
+    return <Loader/>;
+  }
+// if(loading || isAuthenticated){
+//   return <Loader/>;
 
-}
+// }
 
  
   const togglePasswordVisibility = () => {

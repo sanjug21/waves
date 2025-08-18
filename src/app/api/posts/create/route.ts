@@ -11,9 +11,6 @@ import { log } from "node:console";
 export async function POST(req: NextRequest) {
   try {
    
-
-    console.log("hello");
-    
     await dbConnect();
 
     const formData = await req.formData();

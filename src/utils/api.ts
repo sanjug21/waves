@@ -21,7 +21,7 @@ API.interceptors.response.use(
         isRefreshing = true;
         originalRequest._retry = true;
 
-        try {
+        try {          
           await API.get('/auth/refresh');
           return API(originalRequest);
         } catch (refreshError) {
