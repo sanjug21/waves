@@ -8,6 +8,13 @@ export interface UserDetails {
   online?: boolean;
 }
 
+export interface BasicUserDetails{
+  _id: string;
+  name: string;
+  email: string;
+  dp?: string;
+}
+
 export interface AuthState {
   user: UserDetails | null;
   isAuthenticated: boolean;
@@ -50,6 +57,7 @@ export interface ProfilePageProps {
 }
 
 export interface UserProfile extends UserDetails {
-  followers: string[];
-  following: string[];
+  followers: BasicUserDetails[];
+  following: BasicUserDetails[];
+  posts: Post[];
 }
