@@ -4,14 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export  async function GET(req:NextRequest){
     try {
-         const token = req.cookies.get("accessToken")?.value;
-
-    if (!token) {
-        return NextResponse.json(
-            { message: "Authentication required" },
-            { status: 401 }
-        );
-    }
+    
         const posts = await Post.find()
             .populate('userId', 'name dp')
             .sort({ createdAt: -1 });
