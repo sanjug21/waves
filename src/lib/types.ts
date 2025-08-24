@@ -7,12 +7,10 @@ export interface UserDetails {
   bio?: string;
   online?: boolean;
 }
-
-export interface BasicUserDetails{
-  _id: string;
-  name: string;
-  email: string;
-  dp?: string;
+export interface ProfileUser extends UserDetails {
+  followers: UserDetails[];
+  following: UserDetails[];
+  posts: Post[];
 }
 
 export interface AuthState {
@@ -56,8 +54,3 @@ export interface ProfilePageProps {
   };
 }
 
-export interface UserProfile extends UserDetails {
-  followers: BasicUserDetails[];
-  following: BasicUserDetails[];
-  posts: Post[];
-}
