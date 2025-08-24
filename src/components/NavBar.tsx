@@ -2,8 +2,16 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { AiFillHome, AiOutlineSearch, AiOutlineBell, AiOutlinePlusCircle, AiOutlineLogout, AiOutlineUser } from 'react-icons/ai';
+import { useRouter, usePathname } from 'next/navigation';
+import { 
+    AiFillHome, AiOutlineHome, 
+    AiOutlineSearch, 
+    AiFillBell, AiOutlineBell, 
+    AiFillPlusCircle, AiOutlinePlusCircle, 
+    AiOutlineLogout, 
+    AiOutlineUser 
+} from 'react-icons/ai';
+import { FaUser } from 'react-icons/fa'; // Import a working user icon from Font Awesome
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { setLoggedOut } from '@/store/slices/authSlice';
 import API from '@/utils/api';
@@ -12,6 +20,7 @@ import { useDebounce, useClickOutside } from '@/lib/hooks/navHooks';
 
 export const NavBar = () => {
     const router = useRouter();
+    const pathname = usePathname();
     const dispatch = useAppDispatch();
     const { user } = useAppSelector((state) => state.auth);
 
@@ -109,6 +118,7 @@ export const NavBar = () => {
     useClickOutside([profileMenuRef], () => setShowProfileMenu(false));
 
     const showResultsDropdown = searchText.length > 0;
+    const profilePath = `/home/profile/${user?._id}`;
 
     return (
         <>
@@ -117,12 +127,12 @@ export const NavBar = () => {
                     <Link href="/home" className="text-3xl font-medium bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text" onClick={clearSearch}>
                         Waves
                     </Link>
-                    <div className="flex items-center space-x-4 sm:space-x-6 bg-gray-800 bg-opacity-90 backdrop-blur-sm rounded-full py-2 px-4">
+                    <div className="flex items-center space-x-6 sm:space-x-8 bg-gray-800 bg-opacity-90 backdrop-blur-sm rounded-full py-2 px-4">
                         <Link href="/home" className="p-2 rounded-full hover:bg-[rgb(0,12,60)] transition-all duration-200" aria-label="Home" onClick={handleNavIconClick}>
-                            <AiFillHome className="h-6 w-6 text-white" />
+                           <AiOutlineHome className={`h-6 w-6 ${pathname === '/home' ? 'text-white' : 'text-gray-400'}`} />
                         </Link>
                         <div className="flex items-center relative">
-                            <div className={`flex items-center transition-all duration-200 ease-linear ${showSearchInput ? 'w-48 opacity-100' : 'w-0 opacity-0 overflow-hidden'}`}>
+                            <div className={`flex items-center transition-all duration-100 ease-linear ${showSearchInput ? 'w-48 opacity-100' : 'w-0 opacity-0 overflow-hidden'}`}>
                                 <input
                                     ref={inputRef}
                                     type="text"
@@ -138,17 +148,17 @@ export const NavBar = () => {
                                 className={`p-2 rounded-full hover:bg-[rgb(0,12,60)] transition-all duration-200 ${showSearchInput ? 'ml-2 hidden' : ''}`}
                                 aria-label="Toggle Search"
                             >
-                                <AiOutlineSearch className="h-6 w-6 text-white" />
+                                <AiOutlineSearch className="h-6 w-6 text-gray-400" />
                             </button>
                         </div>
-                        <Link href={`/home/profile/${user?._id}`} className="p-2 rounded-full hover:bg-[rgb(0,12,60)] transition-all duration-200" aria-label="Profile" onClick={handleNavIconClick}>
-                            <AiOutlineUser className="h-6 w-6 text-white" />
+                        <Link href={profilePath} className="p-2 rounded-full hover:bg-[rgb(0,12,60)] transition-all duration-200" aria-label="Profile" onClick={handleNavIconClick}>
+                            <AiOutlineUser className={`h-6 w-6 ${pathname === profilePath ? 'text-white' : 'text-gray-400'}`} />
                         </Link>
                         <Link href="/home/notifications" className="p-2 rounded-full hover:bg-[rgb(0,12,60)] transition-all duration-200" aria-label="Notifications" onClick={handleNavIconClick}>
-                            <AiOutlineBell className="h-6 w-6 text-white" />
+                             <AiOutlineBell className={`h-6 w-6 ${pathname === '/home/notifications' ? 'text-white' : 'text-gray-400'}`} />
                         </Link>
                         <Link href="/home/create" className="p-2 rounded-full hover:bg-[rgb(0,12,60)] transition-all duration-200" aria-label="Create Post" onClick={handleNavIconClick}>
-                            <AiOutlinePlusCircle className="h-6 w-6 text-white" />
+                            <AiOutlinePlusCircle className={`h-6 w-6 ${pathname === '/home/create' ? 'text-white' : 'text-gray-400'}`} />
                         </Link>
                     </div>
                     <div className="relative flex items-center " ref={profileMenuRef}>
@@ -156,17 +166,17 @@ export const NavBar = () => {
                         <button className=" rounded-full focus:outline-none" onClick={handleProfileClick} aria-label="Open Profile Menu">
                             <img
                                 src={user?.dp || defaultDp}
-                                alt={user?.name}
+                                alt={user?.name || 'User'}
                                 className="w-10 h-10 rounded-full border border-black object-cover"
                                 onError={(e) => { e.currentTarget.src = defaultDp; }}
                             />
                         </button>
                         {showProfileMenu && (
                             <div className="absolute right-0 top-full mt-2 w-48 bg-gray-800 bg-opacity-95 backdrop-blur-md rounded-lg shadow-xl overflow-hidden z-50">
-                                <Link href={`/home/profile/${user?._id}`} onClick={() => setShowProfileMenu(false)} className="flex items-center p-3 hover:bg-gray-700 transition-colors duration-200">
+                                <Link href={profilePath} onClick={() => setShowProfileMenu(false)} className="flex items-center p-3 hover:bg-gray-700 transition-colors duration-200">
                                     <img
                                         src={user?.dp || defaultDp}
-                                        alt={user?.name}
+                                        alt={user?.name || 'User'}
                                         className="w-8 h-8 rounded-full object-cover mr-2"
                                         onError={(e) => { e.currentTarget.src = defaultDp; }}
                                     />
