@@ -14,11 +14,15 @@ export async function GET(req: NextRequest) {
         await dbConnect();
 
         const user = await User.findById(userId)
-            .select('followers')
+            .select('following')
             .populate({
-                path: 'followers',
+                path: 'following',
                 select: '_id dp name email'
             });
+        
+        if (!user) {
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
+        }
         
         return NextResponse.json(user, { status: 200 });
     } catch (error) {

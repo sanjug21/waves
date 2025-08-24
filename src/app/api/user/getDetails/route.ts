@@ -14,21 +14,8 @@ export async function GET(req: NextRequest) {
     try {
         await dbConnect();
 
-         const user = await User.findById(userId).select('-password -__v -createdAt -updatedAt')
-         .populate({
-    path: 'posts',
-    options: {
-        sort: { 'createdAt': -1 }
-    }})
-    //     }).populate({
-    //             path: 'followers',
-    //             select: '_id dp name email'
-    //         })
-    //         .populate({
-    //             path: 'following',
-    //             select: '_id dp name email'
-    //         });;
-        
+         const user = await User.findById(userId).select('-password -__v -createdAt -updatedAt -posts -following'); 
+            
         if (!user) {
             return NextResponse.json({ error: "User not found" }, { status: 404 });
         }
