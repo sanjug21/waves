@@ -13,6 +13,11 @@
     background-position: center;
 }
 
+.ChatBg{
+  background-image: url('/c1.png');
+  background-size: cover;
+  background-position: center;
+}
 
 /* Make the scrollbar appear only on hover */
 .scrollbar-hidden-style {

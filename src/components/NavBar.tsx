@@ -17,6 +17,9 @@ import { setLoggedOut } from '@/store/slices/authSlice';
 import API from '@/utils/api';
 import { SearchedUser } from '@/lib/types';
 import { useDebounce, useClickOutside } from '@/lib/hooks/navHooks';
+import { HiOutlineHome } from 'react-icons/hi';
+import { BiHome } from 'react-icons/bi';
+import { TiHomeOutline } from 'react-icons/ti';
 
 export const NavBar = () => {
     const router = useRouter();
@@ -122,16 +125,16 @@ export const NavBar = () => {
 
     return (
         <>
-            <nav className="z-50 p-3 text-white shadow-cyan-800 shadow-lg NavBg">
+            <nav className="z-50 p-3 text-white shadow-cyan-800 shadow-lg NavBg h-[75px]">
                 <div className="mx-auto flex items-center justify-between">
                     <Link href="/home" className="text-3xl font-medium bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text" onClick={clearSearch}>
                         Waves
                     </Link>
-                    <div className="flex items-center space-x-6 sm:space-x-8 bg-gray-800 bg-opacity-90 backdrop-blur-sm rounded-full py-2 px-4">
-                        <Link href="/home" className="p-2 rounded-full hover:bg-[rgb(0,12,60)] transition-all duration-200" aria-label="Home" onClick={handleNavIconClick}>
-                           <AiOutlineHome className={`h-6 w-6 ${pathname === '/home' ? 'text-white' : 'text-gray-400'}`} />
+                    <div className="flex items-center space-x-6 sm:space-x-8 bg-gray-800 bg-opacity-90 backdrop-blur-sm rounded-full py-2 px-4 text-white">
+                        <Link href="/home" className={`p-2 rounded-full hover:bg-[rgb(0,12,60)] transition-all duration-200  ${pathname === '/home' ? ' bg-[rgb(0,12,60)]' : ''}`} aria-label="Home" onClick={handleNavIconClick}>
+                           <AiFillHome className="h-6 w-6" />
                         </Link>
-                        <div className="flex items-center relative">
+                        <div className="flex items-center relative ">
                             <div className={`flex items-center transition-all duration-100 ease-linear ${showSearchInput ? 'w-48 opacity-100' : 'w-0 opacity-0 overflow-hidden'}`}>
                                 <input
                                     ref={inputRef}
@@ -141,24 +144,24 @@ export const NavBar = () => {
                                     value={searchText}
                                     onChange={handleSearchChange}
                                 />
-                                <AiOutlineSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+                                <AiOutlineSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 h-6 w-6  pointer-events-none" />
                             </div>
                             <button
                                 onClick={handleSearchIconClick}
                                 className={`p-2 rounded-full hover:bg-[rgb(0,12,60)] transition-all duration-200 ${showSearchInput ? 'ml-2 hidden' : ''}`}
                                 aria-label="Toggle Search"
                             >
-                                <AiOutlineSearch className="h-6 w-6 text-gray-400" />
+                                <AiOutlineSearch className="h-6 w-6 " />
                             </button>
                         </div>
-                        <Link href={profilePath} className="p-2 rounded-full hover:bg-[rgb(0,12,60)] transition-all duration-200" aria-label="Profile" onClick={handleNavIconClick}>
-                            <AiOutlineUser className={`h-6 w-6 ${pathname === profilePath ? 'text-white' : 'text-gray-400'}`} />
+                        <Link href={profilePath} className={`p-2 rounded-full hover:bg-[rgb(0,12,60)] transition-all duration-200 ${pathname === profilePath ? 'bg-[rgb(0,12,60)]' : ''}`} aria-label="Profile" onClick={handleNavIconClick}>
+                            <AiOutlineUser className="h-6 w-6" />
                         </Link>
-                        <Link href="/home/notifications" className="p-2 rounded-full hover:bg-[rgb(0,12,60)] transition-all duration-200" aria-label="Notifications" onClick={handleNavIconClick}>
-                             <AiOutlineBell className={`h-6 w-6 ${pathname === '/home/notifications' ? 'text-white' : 'text-gray-400'}`} />
+                        <Link href="/home/notifications" className={`p-2 rounded-full hover:bg-[rgb(0,12,60)] transition-all duration-200 ${pathname === '/home/notifications' ? 'bg-[rgb(0,12,60)]' : ''}`} aria-label="Notifications" onClick={handleNavIconClick}>
+                             <AiOutlineBell className="h-6 w-6" />
                         </Link>
-                        <Link href="/home/create" className="p-2 rounded-full hover:bg-[rgb(0,12,60)] transition-all duration-200" aria-label="Create Post" onClick={handleNavIconClick}>
-                            <AiOutlinePlusCircle className={`h-6 w-6 ${pathname === '/home/create' ? 'text-white' : 'text-gray-400'}`} />
+                        <Link href="/home/create" className={`p-2 rounded-full hover:bg-[rgb(0,12,60)] transition-all duration-200 ${pathname === '/home/create' ? 'bg-[rgb(0,12,60)]' : ''}`} aria-label="Create Post" onClick={handleNavIconClick}>
+                            <AiOutlinePlusCircle className="h-6 w-6" />
                         </Link>
                     </div>
                     <div className="relative flex items-center " ref={profileMenuRef}>
@@ -166,7 +169,7 @@ export const NavBar = () => {
                         <button className=" rounded-full focus:outline-none" onClick={handleProfileClick} aria-label="Open Profile Menu">
                             <img
                                 src={user?.dp || defaultDp}
-                                alt={user?.name || 'User'}
+                                alt={user?.name }
                                 className="w-10 h-10 rounded-full border border-black object-cover"
                                 onError={(e) => { e.currentTarget.src = defaultDp; }}
                             />

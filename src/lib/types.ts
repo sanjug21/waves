@@ -48,7 +48,7 @@ export interface Post {
 
 export interface SearchedUser extends UserDetails {}
 
-export interface ProfilePageProps {
+export interface IdProps {
   params: {
     id: string;
   };

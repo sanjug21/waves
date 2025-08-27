@@ -11,10 +11,10 @@ import {
     getPosts,
     getUser,
 } from "@/lib/hooks/profileHooks";
-import { ProfilePageProps, Post, UserDetails } from "@/lib/types";
+import { IdProps, Post, UserDetails } from "@/lib/types";
 import { useAppSelector } from "@/store/hooks";
 
-export default function ProfilePage({ params }: ProfilePageProps) {
+export default function ProfilePage({ params }: IdProps) {
     const { id } = params;
     const defImage = '/def.png';
 

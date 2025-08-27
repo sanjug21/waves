@@ -1,12 +1,9 @@
 import { dbConnect } from "@/lib/dbConnect";
 import Post from "@/lib/models/Post";
-import User from "@/lib/models/User";
 import { PostSchema } from "@/lib/schema/post.schema";
 import { uploadImage } from "@/utils/post";
 import { NextRequest, NextResponse } from "next/server";
 import { ZodError } from "zod";
-import { verifyAccessToken } from "@/utils/auth";
-import { log } from "node:console";
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,7 +14,6 @@ export async function POST(req: NextRequest) {
     const description = formData.get('description') as string;
     const imageFile = formData.get('image') as File | null;
     const userId = formData.get('userId') as string;
-    console.log(userId)
     let imageUrl = '';
     let publicId = '';
 
@@ -37,9 +33,6 @@ export async function POST(req: NextRequest) {
     const parsedData = PostSchema.parse(postData);
 
     const post = await Post.create(parsedData);
-    await User.findByIdAndUpdate(userId, {
-      $push: { posts: post._id }
-    });
 
     return NextResponse.json({
       message: "Post created successfully.",
