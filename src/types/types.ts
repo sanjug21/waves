@@ -47,3 +47,7 @@ export interface Post {
 }
 
 export interface SearchedUser extends UserDetails {}
+
+export interface IdProp{
+  id:string
+}

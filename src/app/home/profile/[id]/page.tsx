@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import Loader from "@/components/Loader";
+import Loader, { Spinner } from "@/components/Loader";
 import PostCard from "@/components/PostCard";
 import UserCard from "@/components/UserCard";
 import {
@@ -14,6 +14,8 @@ import {
 import {  Post, UserDetails } from "@/types/types";
 import { useAppSelector } from "@/store/hooks";
 import { useParams } from "next/navigation";
+import ProfilePosts from "@/components/profile/ProfilePosts";
+import UserProfile from "@/components/profile/UserProfile";
 
 export default function ProfilePage() {
     const params=useParams()
@@ -26,10 +28,6 @@ export default function ProfilePage() {
     const [activeTab, setActiveTab] = useState<'posts' | 'following' | 'followers'>('posts');
     const [isFollowing, setIsFollowing] = useState(false);
     
-    const [posts, setPosts] = useState<Post[]>([]);
-    const [postsLoading, setPostsLoading] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [hasMorePosts, setHasMorePosts] = useState(true);
 
     const [followers, setFollowers] = useState<UserDetails[]>([]);
     const [following, setFollowing] = useState<UserDetails[]>([]);
@@ -61,21 +59,9 @@ export default function ProfilePage() {
             }
         };
 
-        const getUserPosts = async () => {
-            try {
-                const postData = await getPosts(1, 10, id);
-                setPosts(postData.posts);
-                setHasMorePosts(postData.hasMore);
-                setCurrentPage(1);
-            } catch (err: any) {
-                setError(err.response?.data?.message || "Failed to fetch user posts.");
-            } finally {
-                setIsLoading(false);
-            }
-        };
 
         getUserDetails();
-        getUserPosts();
+        
 
     }, [currUserId, id]);
 
@@ -83,22 +69,7 @@ export default function ProfilePage() {
         return <Loader />;
     }
 
-    const fetchMorePosts = async () => {
-        if (postsLoading || !hasMorePosts) return;
-
-        setPostsLoading(true);
-        try {
-            const nextPage = currentPage + 1;
-            const data = await getPosts(nextPage, 10, id);
-            setPosts((prevPosts) => [...prevPosts, ...data.posts]);
-            setHasMorePosts(data.hasMore);
-            setCurrentPage(nextPage);
-        } catch (err) {
-            setError("Failed to fetch more posts.");
-        } finally {
-            setPostsLoading(false);
-        }
-    };
+   
 
     const followToggle = async () => {
         if (!currentUser) return;
@@ -161,38 +132,9 @@ export default function ProfilePage() {
 
     return (
         <div className="text-white bg-blue-200 font-sans overflow-y-auto">
-            <div className="relative bg-slate-200 NavBg shadow-2xl p-4 pt-5 transition-all duration-300 ease-in-out rounded-b-lg mb-2">
-                <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-8">
-                    <img
-                        className="w-32 h-32 sm:w-48 sm:h-48 rounded-full object-cover border-4 border-[rgb(0,12,60)] shadow-lg"
-                        src={profileUser?.dp || defImage}
-                        alt={`${profileUser?.name}'s profile picture`}
-                    />
-                    <div className="flex-1 flex flex-col items-center sm:items-start text-center sm:text-left mt-4 sm:mt-0">
-                        <h1 className="text-3xl sm:text-4xl font-bold">
-                            {profileUser?.name}
-                        </h1>
-                        <p className="text-sm text-gray-400 my-2">{profileUser?.email}</p>
-                        {profileUser?.bio && (
-                            <p className="text-gray-300 mt-2 max-w-full">
-                                {profileUser.bio}
-                            </p>
-                        )}
-                        {!isOwner && (
-                            <div className="flex space-x-4 mt-4">
-                                <button className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg transition-colors" onClick={followToggle}>
-                                    {isFollowing ? "Unfollow" : "Follow"}
-                                </button>
-                                <button className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-6 rounded-lg transition-colors">
-                                    Message
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </div>
+            <UserProfile id={id}/>
             
-            <div className="flex justify-around p-1 pl-2 pr-2 NavBg text-xl rounded-t-lg">
+            <div className="flex  justify-around p-1 pl-2 pr-2 NavBg text-xl rounded-t-lg">
                 <button
                     onClick={() => handleTabClick('posts')}
                     className={`py-2 px-4 ${activeTab === 'posts' ? activeTabClass : inactiveTabClass}`}
@@ -213,34 +155,15 @@ export default function ProfilePage() {
                 </button>
             </div>
 
-            <div className="bg-blue-200 min-h-[500px]">
+            <div className="bg-blue-200 min-h-[calc(100vh-350px)]">
                 {activeTab === 'posts' && (
-                    <div className="space-y-4">
-                        {posts.length > 0 ? (
-                            posts.map((post) => <PostCard key={post._id} post={post} />)
-                        ) : (
-                            <p className="text-center text-slate-500 pt-12">This user has no posts yet.</p>
-                        )}
-                        
-                        {postsLoading && <Loader />}
-
-                        {hasMorePosts && !postsLoading && (
-                            <div className="flex justify-center mt-6">
-                                <button 
-                                    onClick={fetchMorePosts} 
-                                    className="px-6 py-2 rounded-full font-semibold bg-slate-700 hover:bg-slate-600 transition-colors duration-200 text-white"
-                                >
-                                    Load More
-                                </button>
-                            </div>
-                        )}
-                    </div>
+                    <ProfilePosts id={id}/>
                 )}
 
                 {activeTab === 'following' && (
                     <div>
                         {followingLoading ? (
-                            <Loader />
+                            <Spinner />
                         ) : following.length > 0 ? (
                             <div>
                                 {following.map((user: UserDetails) => (
@@ -256,7 +179,7 @@ export default function ProfilePage() {
                 {activeTab === 'followers' && (
                     <div>
                         {followersLoading ? (
-                            <Loader />
+                            <Spinner />
                         ) : followers.length > 0 ? (
                             <div className="space-y-1">
                                 {followers.map((user: UserDetails) => (

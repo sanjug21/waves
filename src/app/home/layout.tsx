@@ -2,14 +2,23 @@
 import React, { useEffect } from 'react';
 import { NavBar } from '@/components/NavBar';
 import { useRouter } from 'next/navigation';
-import Loader from '@/components/Loader';
-import { IoMdAdd } from "react-icons/io";
-import Link from 'next/link';
+import { useAppSelector } from '@/store/hooks';
+import { AuthStatusLoader } from '@/components/authStatus';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  
+
+
+  const router = useRouter()
+  const { isAuthenticated, loading } = useAppSelector((state) => state.auth)
+
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      router.replace('/auth/login')
+    }
+  }, [isAuthenticated, loading, router])
   
   return (
+    <AuthStatusLoader>
     <div className="h-screen lendingPage flex flex-col ">
      
        <NavBar />
@@ -18,7 +27,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className='hidden lg:block sm:w-1/2 md:w-1/3  p-5 overflow-auto'>
         Suggestions
         </div>
-        <div className="w-full  lg:w-2/3  scrollbar-hidden-style   border-2 border-[rgb(0,12,60)] transition-all duration-300 ease-in-out">
+        <div className="w-full  lg:w-2/3  scrollbar-hidden-style   border-2 border-[rgb(0,12,60)] transition-all duration-300 ease-in-out overflow-y-auto">
         {children}
       </div>
       <div className='hidden sm:block sm:w-2/5  lg:w-1/3   p-5 overflow-auto transition-all duration-300 ease-in-out'>
@@ -31,5 +40,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <IoMdAdd />
     </Link> */}
     </div>
+    </AuthStatusLoader>
   );
 }
