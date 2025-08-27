@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import Loader from '@/components/Loader';
 import API from '@/utils/api';
-import { Post } from '@/lib/types';
+import { Post } from '@/types/types';
 import PostCard from '@/components/PostCard';
 
 export default function Home() {

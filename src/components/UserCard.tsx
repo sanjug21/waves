@@ -1,5 +1,5 @@
 'use client';
-import { UserDetails } from "@/lib/types";
+import { UserDetails } from "@/types/types";
 
 export default function UserCard({ user }: { user: UserDetails }) {
     
