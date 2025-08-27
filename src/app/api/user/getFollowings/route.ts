@@ -1,4 +1,5 @@
 import { dbConnect } from "@/lib/dbConnect";
+import Follow from "@/lib/models/Follow";
 import User from "@/lib/models/User";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -13,20 +14,22 @@ export async function GET(req: NextRequest) {
     try {
         await dbConnect();
 
-        const user = await User.findById(userId)
-            .select('following')
-            .populate({
-                path: 'following',
-                select: '_id dp name email'
-            });
-        
-        if (!user) {
+        const userExists = await User.exists({ _id: userId });
+        if (!userExists) {
             return NextResponse.json({ error: "User not found" }, { status: 404 });
         }
-        
-        return NextResponse.json(user, { status: 200 });
+
+        const followings = await Follow.find({ follower: userId })
+            .populate({
+                path: "following",
+                select: "_id dp name email bio online",
+            });
+
+        const formattedFollowings = followings.map(f => f.following);
+
+        return NextResponse.json({ followings: formattedFollowings }, { status: 200 });
     } catch (error) {
-        console.error("Error fetching user details:", error);
+        console.error("Error fetching followings:", error);
         return new Response("Internal Server Error", { status: 500 });
     }
 }
