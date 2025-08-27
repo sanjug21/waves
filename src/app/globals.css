@@ -45,8 +45,8 @@
 }
 
 
-.loader {
-  color: rgb(195, 61, 13);
+.loader2 {
+  color: coral;
   font-size: 10px;
   width: 1em;
   height: 1em;
@@ -150,6 +150,28 @@
 
   40% {
     box-shadow: 0 2.5em 0 0
+  }
+}
+
+
+.loader3 {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: inline-block;
+  border-top: 3px solid #FFF;
+  border-right: 3px solid transparent;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
   }
 }
 /* rgb(0, 7, 35)

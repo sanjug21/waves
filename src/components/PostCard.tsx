@@ -9,6 +9,7 @@ const PostCard = ({ post }: { post: Post }) => {
   const [isOverflowing, setIsOverflowing] = useState(false);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
   const defaultDp = "/def.png";
+
   
   useEffect(() => {
     if (descriptionRef.current) {
