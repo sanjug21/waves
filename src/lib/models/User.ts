@@ -8,8 +8,6 @@ export interface User extends Document {
   dp: string;
   bio: string;
   online: boolean;
-  followers: Types.ObjectId[];
-  following: Types.ObjectId[];
   password?: string;
 }
 
@@ -19,8 +17,6 @@ const UserSchema: Schema = new Schema({
   dp: { type: String, default: '' },
   bio: { type: String, default: '', maxlength: 160 },
   online: { type: Boolean, default: false },
-  followers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-  following: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   password: { type: String, required: true,select: false},
 },{timestamps:true});
 

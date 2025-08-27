@@ -66,7 +66,7 @@ export default function UserProfile({id}:IdProp){
     }
 
     return(
-        <div className="relative bg-slate-200 NavBg shadow-2xl p-4 pt-5 transition-all duration-300 ease-in-out rounded-b-lg mb-2">
+        <div className="relative bg-white  shadow-2xl p-4 pt-5 transition-all duration-300 ease-in-out rounded-b-lg mb-2">
                 <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-8">
                     <img
                         className="w-32 h-32 sm:w-48 sm:h-48 rounded-full object-cover border-4 border-[rgb(0,12,60)] shadow-lg"
@@ -74,7 +74,7 @@ export default function UserProfile({id}:IdProp){
                         alt={`${profileUser?.name}'s profile picture`}
                     />
                     <div className="flex-1 flex flex-col items-center sm:items-start text-center sm:text-left mt-4 sm:mt-0">
-                        <h1 className="text-3xl sm:text-4xl font-bold">
+                        <h1 className="text-3xl sm:text-4xl font-bold text-black">
                             {profileUser?.name}
                         </h1>
                         <p className="text-sm text-gray-400 my-2">{profileUser?.email}</p>
