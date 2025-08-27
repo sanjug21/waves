@@ -7,11 +7,11 @@ export interface UserDetails {
   bio?: string;
   online?: boolean;
 }
-export interface ProfileUser extends UserDetails {
-  followers: UserDetails[];
-  following: UserDetails[];
-  posts: Post[];
-}
+// export interface ProfileUser extends UserDetails {
+//   followers: UserDetails[];
+//   following: UserDetails[];
+//   posts: Post[];
+// }
 
 export interface AuthState {
   user: UserDetails | null;
@@ -47,10 +47,3 @@ export interface Post {
 }
 
 export interface SearchedUser extends UserDetails {}
-
-export interface IdProps {
-  params: {
-    id: string;
-  };
-}
-

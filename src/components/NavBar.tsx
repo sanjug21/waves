@@ -15,8 +15,8 @@ import { FaUser } from 'react-icons/fa'; // Import a working user icon from Font
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { setLoggedOut } from '@/store/slices/authSlice';
 import API from '@/utils/api';
-import { SearchedUser } from '@/lib/types';
-import { useDebounce, useClickOutside } from '@/lib/hooks/navHooks';
+import { SearchedUser } from '@/types/types';
+import { useDebounce, useClickOutside } from '@/hooks/navHooks';
 import { HiOutlineHome } from 'react-icons/hi';
 import { BiHome } from 'react-icons/bi';
 import { TiHomeOutline } from 'react-icons/ti';

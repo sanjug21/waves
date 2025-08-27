@@ -10,12 +10,14 @@ import {
     getFollowing,
     getPosts,
     getUser,
-} from "@/lib/hooks/profileHooks";
-import { IdProps, Post, UserDetails } from "@/lib/types";
+} from "@/hooks/profileHooks";
+import {  Post, UserDetails } from "@/types/types";
 import { useAppSelector } from "@/store/hooks";
+import { useParams } from "next/navigation";
 
-export default function ProfilePage({ params }: IdProps) {
-    const { id } = params;
+export default function ProfilePage() {
+    const params=useParams()
+    const id = params?.id as string;
     const defImage = '/def.png';
 
     const [isLoading, setIsLoading] = useState(true);
@@ -51,6 +53,7 @@ export default function ProfilePage({ params }: IdProps) {
                 const data = await getUser(id);
                 setProfileUser(data);
                 setIsFollowing(data.followers.includes(currUserId));
+                
             } catch (err: any) {
                 setError(err.response?.data?.message || "Failed to fetch user details.");
             } finally {

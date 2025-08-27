@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { useAppDispatch,useAppSelector } from '@/store/hooks';
 import { setAuthenticated, setLoggedOut, setLoading } from '@/store/slices/authSlice';
-import { UserDetails } from '@/lib/types';
+import { UserDetails } from '@/types/types';
 import Loader from './Loader';
 
 export function AuthStatusLoader({ children }: { children: React.ReactNode }) {

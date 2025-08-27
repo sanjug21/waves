@@ -1,11 +1,13 @@
 'use client'
-import { getUser } from "@/lib/hooks/profileHooks";
-import { IdProps, UserDetails } from "@/lib/types";
+import { getUser } from "@/hooks/profileHooks";
+import { UserDetails } from "@/types/types";
+import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { IoMdSend } from "react-icons/io";
 
-export default function Chat({ params }: IdProps) {
-    const { id } = params;
+export default function Chat() {
+    const params=useParams();
+    const id=params?.id as string;
     const defImg = '/def.png';
 
     const [chatUser, setChatUser] = useState<UserDetails | null>(null);
@@ -15,7 +17,7 @@ export default function Chat({ params }: IdProps) {
     useEffect(() => {
         const fetchChatUser = async () => {
             try {
-                const user = await getUser(id);
+                const user = await getUser(id );
                 setChatUser(user);
             } catch (err) {
                 console.error("Failed to fetch user:", err);

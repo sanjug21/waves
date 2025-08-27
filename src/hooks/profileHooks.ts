@@ -1,7 +1,7 @@
 import API from "@/utils/api";
-import { Post, UserDetails } from "../types";
+import { Post, UserDetails } from "../types/types";
 
-export async function getUser(userId: string): Promise<UserDetails> {
+export async function getUser(userId: string) {
     try {
         const response = await API.get(`/user/getDetails?id=${userId}`);
         return response.data;

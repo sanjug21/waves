@@ -2,10 +2,20 @@
   "name": "waves",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
+    "dev:next": "next dev --turbopack",
+    "dev:socket": "tsx watch src/socket.ts",
+    "dev": "concurrently -n \"Next,Socket\" -c \"cyan,magenta\" --kill-others-on-fail \"npm:dev:next\" \"npm:dev:socket\"",
+
+    "build:next": "next build",
+    "build:socket": "tsc --project tsconfig.socket.json",
+    "build": "npm run build:next && npm run build:socket",
+
+    "start:next": "next start",
+    "start:socket": "node dist/socket.js",
+    "start": "concurrently -n \"Next,Socket\" --kill-others-on-fail \"npm:start:next\" \"npm:start:socket\"",
+
     "lint": "next lint"
   },
   "dependencies": {
@@ -23,19 +33,26 @@
     "react-icons": "^5.5.0",
     "react-redux": "^9.2.0",
     "react-toastify": "^11.0.5",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "uuid": "^11.1.0",
     "zod": "^4.0.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^20",
+    "@types/node": "^20.19.11",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/socket.io-client": "^1.4.36",
+    "concurrently": "^9.2.1",
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
     "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.5",
     "typescript": "^5"
   }
 }
