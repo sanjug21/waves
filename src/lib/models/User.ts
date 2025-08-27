@@ -10,7 +10,6 @@ export interface User extends Document {
   online: boolean;
   followers: Types.ObjectId[];
   following: Types.ObjectId[];
-  posts: Types.ObjectId[];
   password?: string;
 }
 
@@ -22,7 +21,6 @@ const UserSchema: Schema = new Schema({
   online: { type: Boolean, default: false },
   followers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   following: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-  posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
   password: { type: String, required: true,select: false},
 },{timestamps:true});
 
