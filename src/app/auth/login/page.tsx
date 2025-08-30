@@ -11,7 +11,6 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ZodError } from 'zod';
 import axios from 'axios';
-import Loader from '@/components/Loader';
 
 export default function Login() {
   const router = useRouter();
@@ -32,10 +31,10 @@ export default function Login() {
   // if(isAuthenticated && loading){
   //   return <Loader/>;
   // }
-// if(isAuthenticated){
-//   return <Loader/>;
+  // if(isAuthenticated){
+  //   return <Loader/>;
 
-// }
+  // }
 
  
   const togglePasswordVisibility = () => {
