@@ -1,4 +1,4 @@
-import { dbConnect } from "@/lib/dbConnect";
+import { dbConnect } from "@/lib/DataBase/dbConnect";
 import User from "@/lib/models/User";
 import { SignupSchema } from "@/lib/schema/user.schema";
 import { generateTokens } from "@/utils/auth";

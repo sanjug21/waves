@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { getFollowers } from "@/hooks/profileHooks";
 import { IdProp, UserDetails } from "@/types/types";
-import Loader from "../Loader";
-import UserCard from "../UserCard";
+import Loader from "../Util/Loader";
+import UserCard from "../Cards/UserCard";
 import UserCardSkeleton from "../skeleton/UserCardSkeleton";
 
 export default function UserFollowers({ id }: IdProp) {

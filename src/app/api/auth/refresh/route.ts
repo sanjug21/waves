@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyRefreshToken, generateTokens } from "@/utils/auth";
 import User from "@/lib/models/User";
-import { dbConnect } from "@/lib/dbConnect";
+import { dbConnect } from "@/lib/DataBase/dbConnect";
 
 export async function GET(req: NextRequest) {
   try {

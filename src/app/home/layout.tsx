@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { NavBar } from '@/components/NavBar';
 import { useRouter } from 'next/navigation';
 import { useAppSelector } from '@/store/hooks';
-import Loader from '@/components/Loader';
+import Loader from '@/components/Util/Loader';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();

@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import ProfileSkelton from "../skeleton/ProfileSkeleton";
 import Link from "next/link";
 import { Settings } from "lucide-react";
-import ImagePreview from "@/components/ImagePreview";
+import ImagePreview from "@/components/Util/ImagePreview";
 
 export default function UserProfile({ id }: IdProp) {
   const [profileUser, setProfileUser] = useState<UserDetails | null>(null);
