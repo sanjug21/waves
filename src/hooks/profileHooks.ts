@@ -82,10 +82,10 @@ export async function updateProfileImage(image: File): Promise<{ dp: string }> {
     }
 }
 
-export async function updateProfileDetails(details: Partial<UserDetails>): Promise<UserDetails> {
+export async function updateProfileDetails(details: Partial<UserDetails>) {
     try {
         const response = await API.patch("/user/updatedetails", details);
-        return response.data.user;
+        return response;
     } catch (error) {
         console.error("Error updating profile details:", error);
         throw error;

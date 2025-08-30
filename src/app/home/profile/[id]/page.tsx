@@ -1,85 +1,50 @@
 'use client';
 
-import { useState, useEffect } from "react";
-import Loader, { Spinner } from "@/components/Loader";
-import PostCard from "@/components/PostCard";
-import UserCard from "@/components/UserCard";
-import {
-    followUnfollowUser,
-    getFollowers,
-    getFollowing,
-    getPosts,
-    getUser,
-} from "@/hooks/profileHooks";
-import {  Post, UserDetails } from "@/types/types";
-import { useAppSelector } from "@/store/hooks";
-import { useParams } from "next/navigation";
+import { useState } from "react";
 import ProfilePosts from "@/components/profile/ProfilePosts";
 import UserProfile from "@/components/profile/UserProfile";
 import UserFollowings from "@/components/profile/UserFollowings";
 import UserFollowers from "@/components/profile/UserFollowers";
+import { useParams } from "next/navigation";
 
 export default function ProfilePage() {
-    const params=useParams()
-    const id = params?.id as string;
-    const defImage = '/def.png';
+  const params = useParams();
+  const id = params?.id as string;
+  const [activeTab, setActiveTab] = useState<'posts' | 'following' | 'followers'>('posts');
 
-    const [activeTab, setActiveTab] = useState<'posts' | 'following' | 'followers'>('posts');
-  
-
-
-   
-
-    
-    
-    const handleTabClick = async (tab: 'posts' | 'following' | 'followers') => {
-        setActiveTab(tab);
+  return (
+    <div className="max-w-3xl text-white font-sans">
+      {/* Profile Header */}
+      <UserProfile id={id} />
 
 
-    };
+      <div className="sticky top-1 z-10 NavBg flex justify-around p-1 pl-2 pr-2 text-xl rounded-t-lg">
+        <button
+          onClick={() => setActiveTab('posts')}
+          className={`py-2 px-4 ${activeTab === 'posts' ? 'border-b-2 border-blue-400 text-white' : 'text-gray-400'}`}
+        >
+          Posts
+        </button>
+        <button
+          onClick={() => setActiveTab('following')}
+          className={`py-2 px-4 ${activeTab === 'following' ? 'border-b-2 border-blue-400 text-white' : 'text-gray-400'}`}
+        >
+          Following
+        </button>
+        <button
+          onClick={() => setActiveTab('followers')}
+          className={`py-2 px-4 ${activeTab === 'followers' ? 'border-b-2 border-blue-400 text-white' : 'text-gray-400'}`}
+        >
+          Followers
+        </button>
+      </div>
 
-    const activeTabClass = "border-b-2 border-blue-400 text-white";
-    const inactiveTabClass = "text-gray-400";
-    
-
-    return (
-        <div className="text-white font-sans overflow-y-auto">
-            <UserProfile id={id}/>
-            
-            <div className="flex  justify-around p-1 pl-2 pr-2 NavBg text-xl rounded-t-lg">
-                <button
-                    onClick={() => handleTabClick('posts')}
-                    className={`py-2 px-4 ${activeTab === 'posts' ? activeTabClass : inactiveTabClass}`}
-                >
-                    Posts
-                </button>
-                <button
-                    onClick={() => handleTabClick('following')}
-                    className={`py-2 px-4 ${activeTab === 'following' ? activeTabClass : inactiveTabClass}`}
-                >
-                    Following
-                </button>
-                <button
-                    onClick={() => handleTabClick('followers')}
-                    className={`py-2 px-4 ${activeTab === 'followers' ? activeTabClass : inactiveTabClass}`}
-                >
-                    Followers
-                </button>
-            </div>
-
-            <div className="">
-                {activeTab === 'posts' && (
-                    <ProfilePosts id={id}/>
-                )}
-
-                {activeTab === 'following' && (
-                    <UserFollowings id={id}/>
-                )}
-
-                {activeTab === 'followers' && (
-                    <UserFollowers id={id}/>
-                )}
-            </div>
-        </div>
-    );
+      {/* Tab Content */}
+      <div className="mt-4">
+        {activeTab === 'posts' && <ProfilePosts id={id} />}
+        {activeTab === 'following' && <UserFollowings id={id} />}
+        {activeTab === 'followers' && <UserFollowers id={id} />}
+      </div>
+    </div>
+  );
 }

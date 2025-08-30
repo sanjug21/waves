@@ -29,7 +29,6 @@ export async function PATCH(req: NextRequest) {
             new: true,
         });
 
-        console.log(updatedUser)
         return NextResponse.json({
             message: "Profile updated successfully",
             // user: updatedUser,

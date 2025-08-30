@@ -32,10 +32,10 @@ export default function Login() {
   // if(isAuthenticated && loading){
   //   return <Loader/>;
   // }
-if(loading || isAuthenticated){
-  return <Loader/>;
+// if(isAuthenticated){
+//   return <Loader/>;
 
-}
+// }
 
  
   const togglePasswordVisibility = () => {
