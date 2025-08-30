@@ -1,4 +1,4 @@
-import { dbConnect } from "@/lib/dbConnect";
+import { dbConnect } from "@/lib/DataBase/dbConnect";
 import Post from "@/lib/models/Post";
 import { PostSchema } from "@/lib/schema/post.schema";
 import { uploadImage } from "@/utils/post";

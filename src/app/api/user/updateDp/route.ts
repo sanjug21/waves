@@ -1,5 +1,5 @@
 
-import { dbConnect } from "@/lib/dbConnect";
+import { dbConnect } from "@/lib/DataBase/dbConnect";
 import User from "@/lib/models/User";
 import { uploadImage } from "@/utils/post"; 
 import { verifyAccessToken } from "@/utils/auth";

@@ -1,4 +1,4 @@
-import { dbConnect } from "@/lib/dbConnect";
+import { dbConnect } from "@/lib/DataBase/dbConnect";
 import Follow from "@/lib/models/Follow";
 import User from "@/lib/models/User";
 import { NextRequest, NextResponse } from "next/server";

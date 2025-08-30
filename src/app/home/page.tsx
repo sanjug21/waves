@@ -1,9 +1,9 @@
 'use client'
 import React, { useEffect, useState, useCallback } from 'react';
-import Loader from '@/components/Loader';
+import Loader from '@/components/Util/Loader';
 import API from '@/utils/api';
 import { Post } from '@/types/types';
-import PostCard from '@/components/PostCard';
+import PostCard from '@/components/Cards/PostCard';
 
 export default function Home() {
   const [loading, setLoading] = useState(true);

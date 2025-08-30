@@ -1,8 +1,8 @@
 import { getPosts } from "@/hooks/profileHooks";
 import { IdProp, Post } from "@/types/types";
 import { useEffect, useState } from "react";
-import PostCard from "../PostCard";
-import { Spinner } from "../Loader";
+import PostCard from "../Cards/PostCard";
+import { Spinner } from "../Util/Loader";
 import PostCardSkeleton from "../skeleton/PostCardSkeleton";
 
 export default function ProfilePosts({id}:IdProp) {

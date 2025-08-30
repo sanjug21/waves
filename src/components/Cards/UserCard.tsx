@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { UserDetails } from "@/types/types";
-import ImagePreview from "@/components/ImagePreview"; 
+import ImagePreview from "@/components/Util/ImagePreview"; 
 
 export default function UserCard({ user }: { user: UserDetails }) {
   const defImage = "/def.png";

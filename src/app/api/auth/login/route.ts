@@ -1,5 +1,5 @@
 
-import { dbConnect } from "@/lib/dbConnect";
+import { dbConnect } from "@/lib/DataBase/dbConnect";
 import User from "@/lib/models/User";
 import { NextRequest, NextResponse } from "next/server";
 import { generateTokens } from "@/utils/auth";

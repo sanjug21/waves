@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Heart, MessageCircle } from 'lucide-react';
 import { Post } from '@/types/types';
-import ImagePreview from '@/components/ImagePreview';
+import ImagePreview from '@/components/Util/ImagePreview';
 
 const PostCard = ({ post }: { post: Post }) => {
   const [isExpanded, setIsExpanded] = useState(false);

@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from "react";
-import ProfilePosts from "@/components/profile/ProfilePosts";
-import UserProfile from "@/components/profile/UserProfile";
-import UserFollowings from "@/components/profile/UserFollowings";
-import UserFollowers from "@/components/profile/UserFollowers";
+import ProfilePosts from "@/components/Profile/ProfilePosts";
+import UserProfile from "@/components/Profile/UserProfile";
+import UserFollowings from "@/components/Profile/UserFollowings";
+import UserFollowers from "@/components/Profile/UserFollowers";
 import { useParams } from "next/navigation";
 
 export default function ProfilePage() {
