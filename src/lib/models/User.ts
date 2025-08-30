@@ -1,40 +1,98 @@
 import bcrypt from 'bcryptjs';
-import mongoose, { Document, Schema, Types } from 'mongoose';
-
+import mongoose, { Document, Schema } from 'mongoose';
 
 export interface User extends Document {
   email: string;
   name: string;
-  dp: string;
-  bio: string;
-  online: boolean;
-  password?: string;
+  password: string;
+
+  dp?: string;
+  bio?: string;
+  online?: boolean;
+
+  nickname?: string;
+  phone?: string;
+  dob?: string;       
+  address?: string;
+  gender?: string;
+
 }
 
-const UserSchema: Schema = new Schema({
-  email: { type: String, required: true, unique: true, trim: true },
-  name: { type: String, required: true, trim: true },
-  dp: { type: String, default: '' },
-  bio: { type: String, default: '', maxlength: 160 },
-  online: { type: Boolean, default: false },
-  password: { type: String, required: true,select: false},
-},{timestamps:true});
+const UserSchema: Schema = new Schema(
+  {
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    password: {
+      type: String,
+      required: true,
+      select: false,
+    },
+    dp: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    bio: {
+      type: String,
+      default: '',
+      maxlength: 160,
+      trim: true,
+    },
+    online: {
+      type: Boolean,
+      default: false,
+    },
+    nickname: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    phone: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    dob: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    address: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    gender: {
+      type: String,
+      enum: ['male', 'female', 'other', ''],
+      default: '',
+      trim: true,
+    },
+  },
+  { timestamps: true }
+);
 
-
-UserSchema.pre('save', async function (next) {
-  
-  if (!this.isModified('password')) {
-    return next();
-  }
-  const passwordToHash = this.password as string; 
+UserSchema.pre<User>('save', async function (next) {
+  if (!this.isModified('password')) return next();
   const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(passwordToHash, salt); 
+  this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 
-UserSchema.methods.matchPassword = async function (enteredPassword: string): Promise<boolean> {
-  if (!this.password) return false; 
+UserSchema.methods.matchPassword = async function (
+  enteredPassword: string
+): Promise<boolean> {
+  if (!this.password) return false;
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-export default mongoose.models.User || mongoose.model('User', UserSchema);
+export default mongoose.models.User || mongoose.model<User>('User', UserSchema);

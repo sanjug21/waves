@@ -35,8 +35,13 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
+    updateUserDp: (state, action: PayloadAction<string>) => {
+      if (state.user) {
+        state.user.dp = action.payload;
+      }
+    },
   },
 });
 
-export const { setAuthenticated, setLoading, setError, clearError, setLoggedOut } = authSlice.actions;
+export const { setAuthenticated, setLoading, setError, clearError, setLoggedOut,updateUserDp } = authSlice.actions;
 export default authSlice.reducer;

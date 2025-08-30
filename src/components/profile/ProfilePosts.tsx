@@ -3,6 +3,7 @@ import { IdProp, Post } from "@/types/types";
 import { useEffect, useState } from "react";
 import PostCard from "../PostCard";
 import { Spinner } from "../Loader";
+import PostCardSkeleton from "../skeleton/PostCardSkeleton";
 
 export default function ProfilePosts({id}:IdProp) {
     const [posts, setPosts] = useState<Post[]>([]);
@@ -47,7 +48,15 @@ export default function ProfilePosts({id}:IdProp) {
     };
 
     if(loading){
-        return <Spinner/>
+         if (loading){
+            return(
+                <div className="space-y-2">
+                {Array.from({ length: 2 }).map((_, i) => (
+                <PostCardSkeleton key={i} />
+              ))}
+            </div>
+            )
+        }
     }
 
     if(error){
@@ -59,7 +68,7 @@ export default function ProfilePosts({id}:IdProp) {
             {posts.length > 0 ? (
                 posts.map((post) => <PostCard key={post._id} post={post} />)
             ) : (
-                <p className="text-center text-slate-500 pt-12">This user has no posts yet.</p>
+                <p className="text-center text-slate-500 pt-12">No posts yet.</p>
             )}
 
             {postsLoading && <Spinner />}

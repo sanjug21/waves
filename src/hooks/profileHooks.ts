@@ -11,6 +11,17 @@ export async function getUser(userId: string) {
     }
 }
 
+
+export async function checkIsFollowing(targetUserId: string): Promise<{ isFollowing: boolean }> {
+    try {
+        const response = await API.get(`/user/isFollowing?id=${targetUserId}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error checking follow status:", error);
+        return { isFollowing: false };
+    }
+}
+
 export async function getFollowers(userId: string): Promise<UserDetails[]> {
     try {
         const response = await API.get(`/user/getFollowers?id=${userId}`);
@@ -24,12 +35,13 @@ export async function getFollowers(userId: string): Promise<UserDetails[]> {
 export async function getFollowing(userId: string): Promise<UserDetails[]> {
     try {
         const response = await API.get(`/user/getFollowings?id=${userId}`);
-        return response.data.following;
+        return response.data.followings;
     } catch (error) {
-        console.error("Error fetching following:", error);
+        console.error("Error fetching followings:", error);
         throw error;
     }
 }
+
 
 export async function followUnfollowUser(userId: string) {
     try {
@@ -51,3 +63,32 @@ export async function getPosts(page: number, limit: number, userId: string): Pro
         throw error;
     }
 }
+
+export async function updateProfileImage(image: File): Promise<{ dp: string }> {
+    try {
+        const formData = new FormData();
+        formData.append("image", image);
+
+        const response = await API.post("/user/updateDp", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error("Error updating profile image:", error);
+        throw error;
+    }
+}
+
+export async function updateProfileDetails(details: Partial<UserDetails>): Promise<UserDetails> {
+    try {
+        const response = await API.patch("/user/updatedetails", details);
+        return response.data.user;
+    } catch (error) {
+        console.error("Error updating profile details:", error);
+        throw error;
+    }
+}
+
