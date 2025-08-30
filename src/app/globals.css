@@ -25,31 +25,32 @@
     background-position: center;
 }
 
-/* Make the scrollbar appear only on hover */
 .scrollbar-hidden-style {
-  /* For Firefox */
+  overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: transparent transparent; /* Hides the scrollbar by default */
-}
-.scrollbar-hidden-style:hover {
-  /* For Firefox, show the scrollbar on hover */
-  scrollbar-color: #a0aec0 transparent; /* Use a gray color for visibility */
-}
-.scrollbar-hidden-style::-webkit-scrollbar {
-  /* For Webkit browsers */
-  width: 8px;
-  background-color: transparent;
-}
-.scrollbar-hidden-style::-webkit-scrollbar-thumb {
-  /* Hide the thumb by default */
-  background-color: transparent;
-  border-radius: 4px;
-}
-.scrollbar-hidden-style:hover::-webkit-scrollbar-thumb {
-  /* Show the thumb on hover */
-  background-color: #a0aec0; /* Use a light gray color for visibility */
+  scrollbar-color: transparent transparent;
 }
 
+.scrollbar-hidden-style:hover {
+  scrollbar-color: #a0aec0 transparent;
+}
+
+.scrollbar-hidden-style::-webkit-scrollbar {
+  width: 6px;
+  background-color: transparent;
+}
+
+.scrollbar-hidden-style::-webkit-scrollbar-thumb {
+  background-color: #a0aec0;
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.scrollbar-hidden-style:hover::-webkit-scrollbar-thumb,
+.scrollbar-hidden-style:active::-webkit-scrollbar-thumb {
+  opacity: 1;
+}
 
 .loader2 {
   color: coral;

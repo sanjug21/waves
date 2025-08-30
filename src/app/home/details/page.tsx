@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAppSelector } from "@/store/hooks";
 import { useDispatch } from "react-redux";
 import { updateProfileDetails, updateProfileImage } from "@/hooks/profileHooks";
@@ -28,6 +28,18 @@ export default function ProfileImageEditor() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const toggleEdit = () => setEditMode((prev) => !prev);
+
+  useEffect(() => {
+    if (currentUser) {
+      setName(currentUser.name || "");
+      setNickname(currentUser.nickname || "");
+      setBio(currentUser.bio || "");
+      setPhone(currentUser.phone || "");
+      setDob(currentUser.dob || "");
+      setAddress(currentUser.address || "");
+      setGender(currentUser.gender || "");
+    }
+  }, [currentUser]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -76,20 +88,9 @@ export default function ProfileImageEditor() {
 
   const updateDetails = async () => {
     try {
-      const updatedFields = {
-        name,
-        nickname,
-        bio,
-        phone,
-        dob,
-        address,
-        gender,
-      };
-
+      const updatedFields = { name, nickname, bio, phone, dob, address, gender };
       await updateProfileDetails(updatedFields);
-
-      // Soft update: merge updated fields into current user
-      dispatch(setAuthenticated({ ...currentUser, ...updatedFields }));
+      dispatch(setAuthenticated({ ...currentUser!, ...updatedFields }));
       toast.success("Profile details updated successfully!");
       setEditMode(false);
     } catch (err: any) {
@@ -99,9 +100,9 @@ export default function ProfileImageEditor() {
   };
 
   return (
-    <div className="w-full flex flex-col items-center">
-      {/* Avatar Section */}
-      <div className="ProfileBg relative w-full min-h-[300px] flex flex-col items-center justify-center pt-2 px-4">
+    <div className="w-full mb-6 flex flex-col items-center gap-6">
+      {/* Profile Image Section */}
+      <div className="ProfileBg relative w-full min-h-[300px] flex flex-col items-center justify-center pt-2 px-4 rounded-b-md overflow-hidden">
         <div className="absolute inset-0 bg-black/40 z-0 pointer-events-none" />
         <h1 className="absolute top-4 left-4 z-10 text-white text-xl sm:text-2xl font-semibold">
           Welcome, {currentUser?.name} 👋
@@ -137,7 +138,7 @@ export default function ProfileImageEditor() {
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className={`z-10 relative mt-2 px-4 py-1 rounded-full font-medium transition-colors duration-200 ${
+            className={`z-10 relative mt-4 px-6 py-2 rounded-full font-medium transition-colors duration-200 ${
               loading
                 ? "bg-gray-400 text-white cursor-not-allowed"
                 : "bg-blue-600 hover:bg-blue-700 text-white"
@@ -150,12 +151,12 @@ export default function ProfileImageEditor() {
         {error && <p className="text-red-500 mt-2 text-sm z-10 relative">{error}</p>}
       </div>
 
-      {/* Details Section */}
-      <div className="relative w-full max-w-xl mt-6 bg-white shadow-md rounded-xl p-6 space-y-5">
+      {/* Profile Details Form */}
+      <div className="relative w-full max-w-3xl mx-auto bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8 space-y-6">
         {!editMode ? (
           <button
             onClick={toggleEdit}
-            className="absolute top-4 right-4 text-gray-500 hover:text-blue-600 transition-colors"
+            className="absolute top-4 right-4 text-gray-500 hover:text-[rgb(0,12,60)] transition-colors"
             title="Edit Profile"
           >
             <Pencil size={20} />
@@ -164,7 +165,7 @@ export default function ProfileImageEditor() {
           <div className="absolute top-4 right-4 flex gap-2">
             <button
               onClick={() => setEditMode(false)}
-              className="px-3 py-1 text-sm rounded-md bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium"
+              className="px-3 py-1 text-sm rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium transition"
             >
               Cancel
             </button>
@@ -174,20 +175,25 @@ export default function ProfileImageEditor() {
         <Field label="Name" value={name} editable={editMode} onChange={setName} />
         <Field label="Nickname" value={nickname} editable={editMode} onChange={setNickname} />
         <Field label="Bio" value={bio} editable={editMode} onChange={setBio} type="textarea" />
+
+        <hr className="border-t border-gray-200" />
+
         <div>
           <label className="block text-sm font-medium text-gray-600">Email</label>
           <p className="text-base text-gray-800">{currentUser?.email || "Add your email"}</p>
         </div>
+
         <Field label="Phone" value={phone} editable={editMode} onChange={setPhone} type="tel" />
         <Field label="Date of Birth" value={dob} editable={editMode} onChange={setDob} type="date" />
         <Field label="Address" value={address} editable={editMode} onChange={setAddress} type="textarea" />
+
         <div>
           <label className="block text-sm font-medium text-gray-600">Gender</label>
           {editMode ? (
             <select
               value={gender}
               onChange={(e) => setGender(e.target.value)}
-              className="mt-1 w-full px-3 py-2 border rounded-md shadow-sm"
+              className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[rgb(0,12,60)] transition"
             >
               <option value="">Select gender</option>
               <option value="male">Male</option>
@@ -202,18 +208,17 @@ export default function ProfileImageEditor() {
         {editMode && (
           <button
             onClick={updateDetails}
-            className="w-full py-2 mt-4 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors duration-200"
+            className="w-full py-2 mt-6 rounded-full bg-[rgb(0,12,60)] hover:bg-[rgb(0,6,34)] text-white font-semibold transition duration-200"
           >
             Update Details
           </button>
         )}
       </div>
     </div>
+       
   );
 }
-
-// Reusable field component
-function Field({
+  function Field({
   label,
   value,
   editable,
@@ -230,15 +235,15 @@ function Field({
 }) {
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-600">{label}</label>
-            {editable ? (
+      <label className="block text-sm font-medium text-gray-600 mb-1">{label}</label>
+      {editable ? (
         type === "textarea" ? (
           <textarea
             value={value || ""}
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}
             rows={3}
-            className="mt-1 w-full px-3 py-2 border rounded-md shadow-sm resize-none"
+            className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm resize-none focus:outline-none focus:ring-2 focus:ring-[rgb(0,12,60)] transition"
           />
         ) : (
           <input
@@ -246,7 +251,7 @@ function Field({
             value={value || ""}
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}
-            className="mt-1 w-full px-3 py-2 border rounded-md shadow-sm"
+            className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[rgb(0,12,60)] transition"
           />
         )
       ) : (

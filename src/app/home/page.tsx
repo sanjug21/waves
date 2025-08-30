@@ -14,6 +14,7 @@ export default function Home() {
     try {
       setLoading(true);
       const response = await API.get('/posts/getpost');
+      
       setPosts(response.data.posts);
     } catch (err: any) {
       setError(err.message);
@@ -41,7 +42,7 @@ export default function Home() {
   }
 
   return (
-    <div className="w-full h-full overflow-y-auto scrollbar-hidden-style ">
+    <div className="w-full h-full ">
       <div className="w-full p-2 pl-4 mx-auto mt-2">
        
         {posts.length === 0 ? (
