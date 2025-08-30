@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
     try {
         await dbConnect();
 
-         const user = await User.findById(userId).select('-password -__v -createdAt -updatedAt -posts -following'); 
+         const user = await User.findById(userId).select('-password -__v -createdAt -updatedAt '); 
             
         if (!user) {
             return NextResponse.json({ error: "User not found" }, { status: 404 });

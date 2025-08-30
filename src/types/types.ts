@@ -6,6 +6,11 @@ export interface UserDetails {
   dp?: string;
   bio?: string;
   online?: boolean;
+  nickname?:string;
+  phone?:string;
+  dob?:string;
+  address?:string
+  gender?:string
 }
 // export interface ProfileUser extends UserDetails {
 //   followers: UserDetails[];
