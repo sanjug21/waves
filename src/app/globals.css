@@ -161,12 +161,12 @@
 }
 
 
-.loader3 {
+.spinner {
   width: 48px;
   height: 48px;
   border-radius: 50%;
   display: inline-block;
-  border-top: 3px solid #FFF;
+  border-top: 3px solid rgb(255, 127, 80);
   border-right: 3px solid transparent;
   box-sizing: border-box;
   animation: rotation 1s linear infinite;
@@ -184,4 +184,5 @@
 /* rgb(0, 7, 35)
 rgb(0, 6, 34) 
 rgb(0,12,60)
+rgb(255, 127, 80)
 */
