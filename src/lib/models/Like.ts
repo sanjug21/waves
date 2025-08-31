@@ -5,7 +5,7 @@ export interface Like extends Document {
     UserId: Types.ObjectId;
 }
 
-const LikeSchema = new Schema<Like>(
+const LikeSchema: Schema<Like> = new mongoose.Schema(
     {
         PostId: { type: Schema.Types.ObjectId, ref: "Post", required: true },
         UserId: { type: Schema.Types.ObjectId, ref: "User", required: true },

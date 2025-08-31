@@ -6,11 +6,24 @@ import Link from "next/link";
 import API from "@/utils/api";
 import { searchChatUser } from "@/hooks/chatHooks";
 import { Spinner } from "./Util/Loader";
+import { getSocket } from "@/lib/socket";
 
 export default function Chat() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<UserDetails[]>([]);
   const [loading, setLoading] = useState(false);
+
+
+   useEffect(() => {
+    const socket = getSocket();
+     socket.emit("get_dummy");
+
+     socket.on("receive_dummy", (data) => {
+       console.log("🧪 Dummy data received:", data);
+     });
+
+     
+   }, []);
 
   useEffect(() => {
     const fetchUserDetails = async () => {

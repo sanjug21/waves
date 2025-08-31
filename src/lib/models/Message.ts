@@ -4,33 +4,39 @@ export enum MessageEnum {
     TEXT = "text",
     IMAGE = "image",
     VIDEO = "video",
-    FILE = "file"
+    FILE = "file",
+    AUDIO = "audio"
 }
 
 export interface Message extends Document {
     conversationId: mongoose.Types.ObjectId;
     senderId: mongoose.Types.ObjectId;
-    content: string;
-    type: MessageEnum;
+    message?: string;
+    image?: string;
+    video?: string;
+    file?: string;
+    audio?: string;
     isEdited: boolean;
     isDeleted: boolean;
-    seenBy: mongoose.Types.ObjectId[]; 
+    isSeen: boolean;
 }
 
-const MessageSchema = new Schema<Message>(
+const MessageSchema: Schema<Message> = new mongoose.Schema(
     {
         conversationId: { type: Schema.Types.ObjectId, ref: "Conversation", required: true },
         senderId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-        content: { type: String, required: true },
-        type: { type: String, enum: Object.values(MessageEnum), default: MessageEnum.TEXT },
+        message: { type: String },
+        image: { type: String },
+        video: { type: String },
+        file: { type: String },
+        audio: { type: String },
         isEdited: { type: Boolean, default: false },
         isDeleted: { type: Boolean, default: false },
-        seenBy: [{ type: Schema.Types.ObjectId, ref: "User" }]
+        isSeen: { type: Boolean, default: false }
     },
     { timestamps: true }
 );
 
 MessageSchema.index({ conversationId: 1, createdAt: -1 });
 
-export default  mongoose.models.Message || mongoose.model<Message>('Message', MessageSchema);
-
+export default mongoose.models.Message || mongoose.model<Message>("Message", MessageSchema);

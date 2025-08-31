@@ -75,6 +75,7 @@ export async function updateProfileImage(image: File): Promise<{ dp: string }> {
             },
         });
 
+        
         return response.data;
     } catch (error) {
         console.error("Error updating profile image:", error);
