@@ -1,3 +1,4 @@
+import Like from "@/lib/models/Like";
 import Post from "@/lib/models/Post";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -7,7 +8,10 @@ export  async function GET(req:NextRequest){
     
         const posts = await Post.find()
             .populate('userId', 'name dp')
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .lean();
+
+        // const likes=await Like.find({postId:{$in:posts.map(p=>p._id)}}).lean();
 
         return NextResponse.json({
             success: true,

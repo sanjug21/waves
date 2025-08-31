@@ -5,8 +5,6 @@ export interface Post extends Document {
   description?: string;
   imageUrl?: string;
   publicId?: string;
-  likes: Types.ObjectId[];
-  comments: Types.ObjectId[];
 }
 
 const PostSchema: Schema = new Schema({
@@ -27,18 +25,8 @@ const PostSchema: Schema = new Schema({
     type: String,
     trim: true,
   },
-  likes: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-    },
-  ],
-  comments: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'Comment',
-    },
-  ],
+
+
 }, { timestamps: true });
 
 export default mongoose.models.Post || mongoose.model('Post', PostSchema);
