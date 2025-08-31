@@ -23,4 +23,4 @@ ConversationSchema.index(
     { unique: true }
 );
 
-export const Conversation = mongoose.model<Conversation>("Conversation", ConversationSchema);
+export default mongoose.models.Conversation ||  mongoose.model<Conversation>("Conversation", ConversationSchema);

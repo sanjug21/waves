@@ -9,6 +9,7 @@ const PostCard = ({ post }: { post: Post }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  // const [likes]
   const descriptionRef = useRef<HTMLParagraphElement>(null);
   const defaultDp = "/def.png";
 
@@ -29,6 +30,16 @@ const PostCard = ({ post }: { post: Post }) => {
       day: 'numeric',
     });
   };
+
+  // const toggleLike = async (_id: string) => {
+  //     const result = await toggleLike(_id);
+  //     if (result.success) {
+  //       setLikeCount((prev) => (hasLiked ? prev - 1 : prev + 1));
+  //       setHasLiked((prev) => !prev);
+  //     } else {
+  //       console.error(result.message);
+  //     }
+  // };
 
   return (
     <>
@@ -89,7 +100,7 @@ const PostCard = ({ post }: { post: Post }) => {
 
         <div className="flex border-t border-gray-100 bg-slate-200 px-5 py-3">
           <div className="w-full flex justify-around">
-            <button className="flex items-center gap-1 text-rose-500 hover:text-rose-600">
+            <button className="flex items-center gap-1 text-orange-500 hover:text-orange-600">
               <Heart size={18} />
               <span className="text-sm text-gray-700">{post.likes.length} Likes</span>
             </button>

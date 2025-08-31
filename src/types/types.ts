@@ -45,12 +45,19 @@ export interface Post {
     description?: string;
     imageUrl?: string;
     publicId?: string;
-    likes: string[];
-    comments: string[];
-    createdAt: string;
-    updatedAt: string;
+  likes: {
+    _id: string;
+    name: string;
+    dp: string;
+  }[];
+  comments: {
+    _id: string;
+    name: string;
+    dp: string;
+  }[];
+  createdAt: string;
+  updatedAt: string;
 }
-
 export interface SearchedUser extends UserDetails {}
 
 export interface IdProp{

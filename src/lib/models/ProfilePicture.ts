@@ -10,4 +10,4 @@ const ProfilePictureSchema = new mongoose.Schema<ProfilePicture>({
     userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" }
 });
 
-export default mongoose.model<ProfilePicture>("ProfilePicture", ProfilePictureSchema);
+export default  mongoose.models.ProfilePicture || mongoose.model<ProfilePicture>('ProfilePicture', ProfilePictureSchema);

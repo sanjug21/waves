@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dbConnect } from "@/lib/DataBase/dbConnect";
 import { verifyAccessToken } from "@/utils/auth";
-import { Conversation } from "@/lib/models/Conversation";
+import Conversation from "@/lib/models/Conversation";
 
 export async function GET(req: NextRequest) {
     const token = req.cookies.get("accessToken")?.value;
