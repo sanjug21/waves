@@ -3,16 +3,16 @@ import mongoose, { Document, Schema } from "mongoose";
 export interface Conversation extends Document {
     senderId: mongoose.Types.ObjectId;
     receiverId: mongoose.Types.ObjectId;
-    lastMessage?: mongoose.Types.ObjectId;
-    createdAt: Date;
-    updatedAt: Date;
+    lastMessage: string;
+    lastMessageSeen: boolean;
 }
 
 const ConversationSchema = new Schema<Conversation>(
     {
         senderId: { type: Schema.Types.ObjectId, ref: "User", required: true },
         receiverId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-        lastMessage: { type: Schema.Types.ObjectId, ref: "Message" }
+        lastMessage: { type: String},
+        lastMessageSeen: { type: Boolean, default: false }
     },
     { timestamps: true }
 );

@@ -5,17 +5,14 @@
   "type": "module",
   "scripts": {
     "dev:next": "next dev --turbopack",
-    "dev:socket": "tsx watch src/socket.ts",
+    "dev:socket": "tsx watch src/socket/socket.ts",
     "dev": "concurrently -n \"Next,Socket\" -c \"cyan,magenta\" --kill-others-on-fail \"npm:dev:next\" \"npm:dev:socket\"",
-
     "build:next": "next build",
     "build:socket": "tsc --project tsconfig.socket.json",
     "build": "npm run build:next && npm run build:socket",
-
     "start:next": "next start",
     "start:socket": "node dist/socket.js",
     "start": "concurrently -n \"Next,Socket\" --kill-others-on-fail \"npm:start:next\" \"npm:start:socket\"",
-
     "lint": "next lint"
   },
   "dependencies": {
@@ -23,6 +20,7 @@
     "axios": "^1.11.0",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.7.0",
+    "dotenv": "^17.2.1",
     "firebase": "^11.10.0",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.525.0",
@@ -46,7 +44,6 @@
     "@types/node": "^20.19.11",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/socket.io-client": "^1.4.36",
     "concurrently": "^9.2.1",
     "eslint": "^9",
     "eslint-config-next": "15.3.5",

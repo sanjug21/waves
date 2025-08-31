@@ -1,4 +1,5 @@
 'use client'
+import ChatTextField from "@/components/ChatComponents/chatTextField";
 import { getUser } from "@/hooks/profileHooks";
 import { UserDetails } from "@/types/types";
 import { useParams } from "next/navigation";
@@ -55,24 +56,7 @@ export default function Chat() {
                 </div>
             </div>
 
-           <div className="p-2 relative">
-            <textarea
-                ref={textareaRef}
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Type your message..."
-                rows={1}
-                className="w-full px-4 pr-12 py-2 resize-none shadow-gray-300 bg-white shadow-2xl rounded-3xl border text-black focus:outline-none focus:ring-1 focus:ring-[rgb(0,12,60)] overflow-hidden"
-            />
-            <button
-                disabled={message.trim() === ""}
-                className={`absolute right-4 top-1/2 transform -translate-y-1/2 ${
-                message.trim() === "" ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
-                }`}
-            >
-                <IoMdSend className="h-6 w-6 text-[rgb(0,12,60)]" />
-            </button>
-            </div>
+          <ChatTextField id={id} />
 
         </div>
     );

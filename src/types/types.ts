@@ -63,3 +63,30 @@ export interface SearchedUser extends UserDetails {}
 export interface IdProp{
   id:string
 }
+
+
+export interface ChatMessage {
+  _id: string;
+  conversationId: string;
+  senderId: string; 
+  message?: string;
+  image?: string;
+  video?: string;
+  file?: string;
+  audio?: string;
+  isEdited: boolean;
+  isDeleted: boolean;
+  isSeen: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SendMessagePayload {
+  senderId: string;
+  receiverId: string;
+  message?: string;
+  image?: string;
+  video?: string;
+  audio?: string;
+  file?: string;
+}
