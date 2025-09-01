@@ -90,3 +90,15 @@ export interface SendMessagePayload {
   audio?: string;
   file?: string;
 }
+
+
+export interface ConversationDetails{
+  _id:string;
+  senderId:string;
+  receiverId:UserDetails;
+  lastMessage:string;
+  lastMessageSeen:boolean;
+  updatedAt:string;
+  createdAt:string;
+
+}

@@ -18,7 +18,7 @@ export interface User extends Document {
 
 }
 
-const UserSchema: Schema<User> = new Schema(
+const UserSchema: Schema<User> = new mongoose.Schema(
   {
     email: {
       type: String,

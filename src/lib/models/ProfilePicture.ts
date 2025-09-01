@@ -5,7 +5,7 @@ export interface ProfilePicture extends Document {
     userId: Types.ObjectId;
 }
 
-const ProfilePictureSchema: Schema<ProfilePicture> = new Schema<ProfilePicture>({
+const ProfilePictureSchema: Schema<ProfilePicture> = new mongoose.Schema<ProfilePicture>({
     url: { type: String, required: true },
     userId: { type: Schema.Types.ObjectId, required: true, ref: "User" }
 });
