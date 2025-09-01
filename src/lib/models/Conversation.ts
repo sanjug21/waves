@@ -1,8 +1,9 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, Schema, Types } from "mongoose";
+import "./User";
 
 export interface Conversation extends Document {
-    senderId: mongoose.Types.ObjectId;
-    receiverId: mongoose.Types.ObjectId;
+    senderId: Types.ObjectId;
+    receiverId: Types.ObjectId;
     lastMessage: string;
     lastMessageSeen: boolean;
 }

@@ -4,6 +4,8 @@ import {Server, Socket} from 'socket.io';
 import Conversation from '../lib/models/Conversation';
 import { dbConnect } from '../lib/DataBase/dbConnect';
 import { sendMessage } from './Message/sendMessage';
+import { SendMessagePayload } from '@/types/types';
+import { Conversations } from './Conversation/Conversation';
 
 const httpServer = createServer();
 const io = new Server(httpServer, {
@@ -17,28 +19,17 @@ const io = new Server(httpServer, {
         await dbConnect();
 
         io.on("connection", (socket: Socket) => {
-
-            socket.on("getConversation", async (uid: string) => {
-                try {
-                    
-                    const conversations = await Conversation.find({
-                        $or: [{ senderId: uid }, { receiverId: uid }]
-                    })
-                        .populate("lastMessage", "content type isSeen")
-                        .populate("receiverId", "_id name dp email")
-                        .sort({ updatedAt: -1 });
-
-                    socket.emit("conversation", conversations);
-                } catch (error) {
-                    console.error("[Socket] Error fetching conversation:", error);
-                    socket.emit("conversation_error", "Failed to load conversations");
-                }
+            
+            socket.on("join", (userId: string) => {
+                socket.join(userId);
+                console.log(`[Socket] User joined room: ${userId}`);
             });
 
-            socket.on("sendMessage", (payload: any) => sendMessage(io, socket, payload));
+            socket.on("sendMessage", async(payload: SendMessagePayload) => await sendMessage(io, socket, payload));
+            socket.on("conversations", async (userId: string) => {await Conversations(io, socket, userId);});
 
             socket.on("disconnect", () => {
-                console.log(`[Socket] User disconnected: ${socket.id}`);
+                console.log(`[Socket] User disconnected`);
             });
         });
 

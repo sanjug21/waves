@@ -1,29 +1,44 @@
-'use client';
+"use client";
 
-import { UserDetails } from "@/types/types";
-import { useEffect, useState } from "react";
+import { ConversationDetails, UserDetails } from "@/types/types";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import API from "@/utils/api";
 import { searchChatUser } from "@/hooks/chatHooks";
 import { Spinner } from "./Util/Loader";
 import { getSocket } from "@/lib/socket";
+import { useAppSelector } from "@/store/hooks";
+import ConversationCard from "./Cards/ConversationCard";
 
 export default function Chat() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<UserDetails[]>([]);
+  const [conversations, setConversations] = useState<ConversationDetails[]>([]);
   const [loading, setLoading] = useState(false);
+  const currentUser = useAppSelector((state) => state.auth.user);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-
-   useEffect(() => {
+  useEffect(() => {
+    if (!currentUser?._id) return;
     const socket = getSocket();
-     socket.emit("get_dummy");
+    socket.emit("join", currentUser._id);
+    socket.emit("conversations", currentUser._id);
 
-     socket.on("receive_dummy", (data) => {
-       console.log("🧪 Dummy data received:", data);
-     });
+    socket.on("conversation", (updatedList: ConversationDetails[]) => {
+      const sorted = [...updatedList].sort((a, b) => {
+        if (a.lastMessageSeen === b.lastMessageSeen) {
+          return (
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+          );
+        }
+        return a.lastMessageSeen ? 1 : -1;
+      });
+      setConversations(sorted);
+    });
 
-     
-   }, []);
+    return () => {
+      socket.off("conversation");
+    };
+  }, [currentUser?._id]);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -48,9 +63,27 @@ export default function Chat() {
     }
   }, [searchQuery]);
 
+ 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        inputRef.current &&
+        !inputRef.current.contains(event.target as Node)
+      ) {
+        setSearchQuery("");
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="max-w-xl mx-auto pt-4  ">
+    <div className="max-w-xl mx-auto pt-4">
       <input
+        ref={inputRef}
         type="text"
         placeholder="Search to chat"
         value={searchQuery}
@@ -59,12 +92,10 @@ export default function Chat() {
         autoComplete="off"
       />
 
-
-
       {loading && <Spinner />}
 
       {searchResults.length > 0 && (
-        <div className="space-y-3">
+        <div className="space-y-3 mt-4">
           {searchResults.map((user) => (
             <Link
               key={user._id}
@@ -76,8 +107,18 @@ export default function Chat() {
                 alt={user.name}
                 className="w-10 h-10 rounded-full object-cover border border-gray-300"
               />
-              <span className="text-sm font-medium text-gray-800">{user.name}</span>
+              <span className="text-sm font-medium text-gray-800">
+                {user.name}
+              </span>
             </Link>
+          ))}
+        </div>
+      )}
+
+      {searchQuery.trim() === "" && conversations.length > 0 && (
+        <div className="mt-6 space-y-3">
+          {conversations.map((conv) => (
+            <ConversationCard key={conv._id} conversation={conv} />
           ))}
         </div>
       )}

@@ -14,7 +14,7 @@ export function AuthStatusLoader({ children }: { children: React.ReactNode }) {
       try {
         const response = await fetch('/api/auth/status');
         const data = await response.json();
-        console.log(data)
+        
         
         if (data.isAuthenticated && data.userDetails) {
           dispatch(setAuthenticated(data.userDetails as UserDetails));

@@ -7,7 +7,7 @@ export interface Post extends Document {
   publicId?: string;
 }
 
-const PostSchema: Schema = new Schema({
+const PostSchema: Schema<Post> = new mongoose.Schema({
   userId: {
     type: Schema.Types.ObjectId,
     ref: 'User',

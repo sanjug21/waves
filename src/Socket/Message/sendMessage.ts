@@ -61,10 +61,24 @@ export const sendMessage = async (io: Server, socket: Socket, data: SendMessageP
             conversationId: receiverConversation._id,
             ...data,
         });
-        console.log("done")
+        
         socket.emit("message_success", { status: "ok" });
 
-        io.to(data.receiverId).emit("new_message", receiverMessage);
+        // io.to(data.receiverId).emit("new_message", receiverMessage);
+        // io.to(data.senderId).emit("conversation", senderConversation);
+        // io.to(data.receiverId).emit("conversation", receiverConversation);
+        const emitConversations = async (userId: string) => {
+            const updated = await Conversation.find({
+                senderId: userId 
+            })
+                .populate("receiverId", "name dp email")
+                .sort({ updatedAt: -1 });
+
+            io.to(userId).emit("conversation", updated);
+        };
+
+        await emitConversations(data.senderId);
+        await emitConversations(data.receiverId);
     } catch (error) {
         console.error("Error sending message:", error);
         socket.emit("message_error", "Failed to send message");
