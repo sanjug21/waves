@@ -27,7 +27,7 @@ export default function Chat() {
   }, [id]);
 
   return (
-    <div className="ChatBg h-[calc(100vh-75px)] flex flex-col text-white">
+    <div className="ChatBg h-[calc(100vh-75px)] flex flex-col text-white ">
       {/* Header */}
       <div className="flex items-center space-x-4 bg-gradient-to-r from-[rgb(0,12,60)] to-[rgb(0,20,80)] p-2 shadow-lg backdrop-blur-md border-b border-blue-400">
         <img

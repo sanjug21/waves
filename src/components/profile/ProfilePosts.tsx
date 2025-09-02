@@ -64,7 +64,7 @@ export default function ProfilePosts({id}:IdProp) {
     }
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4 ">
             {posts.length > 0 ? (
                 posts.map((post) => <PostCard key={post._id} post={post} />)
             ) : (

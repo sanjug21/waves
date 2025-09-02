@@ -13,7 +13,7 @@ export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<'posts' | 'following' | 'followers'>('posts');
 
   return (
-    <div className="max-w-3xl text-white font-sans">
+    <div className="max-w-3xl text-white font-sans h-[calc(100vh-75px)] bg-blue-200">
       {/* Profile Header */}
       <UserProfile id={id} />
 
