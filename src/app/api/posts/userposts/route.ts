@@ -1,4 +1,4 @@
-import Post from "@/lib/models/Post";
+import Post from "@/lib/models/Post.model";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {

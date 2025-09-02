@@ -1,5 +1,5 @@
 import { dbConnect } from "@/lib/DataBase/dbConnect";
-import Follow from "@/lib/models/Follow";
+import Follow from "@/lib/models/Follow.model";
 import { verifyAccessToken } from "@/utils/auth";
 import { NextRequest, NextResponse } from "next/server";
 

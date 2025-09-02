@@ -1,6 +1,6 @@
 import { dbConnect } from "@/lib/DataBase/dbConnect";
-import Follow from "@/lib/models/Follow";
-import User from "@/lib/models/User";
+import Follow from "@/lib/models/Follow.model";
+import User from "@/lib/models/User.model";
 import { verifyAccessToken } from "@/utils/auth";
 import { NextRequest, NextResponse } from "next/server";
 

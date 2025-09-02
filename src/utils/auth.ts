@@ -1,5 +1,5 @@
 import jwt, { Secret, JwtPayload, TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
-import { User } from '@/lib/models/User';
+import { User } from '@/lib/models/User.model';
 
 const ACCESS_TOKEN_SECRET: Secret = process.env.ACCESS_TOKEN_SECRET || 'hello';
 const REFRESH_TOKEN_SECRET: Secret = process.env.REFRESH_TOKEN_SECRET || 'world';

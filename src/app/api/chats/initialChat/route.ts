@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dbConnect } from "@/lib/DataBase/dbConnect";
 import { verifyAccessToken } from "@/utils/auth";
+import Message from "@/lib/models/Message.model";
 import Conversation from "@/lib/models/Conversation.model";
 
 export async function GET(req: NextRequest) {
     const token = req.cookies.get("accessToken")?.value;
+    const receiverId = req.nextUrl.searchParams.get("receiverId");
     if (!token) {
         return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
@@ -18,13 +20,12 @@ export async function GET(req: NextRequest) {
     const currentUserId = decodedPayload.id;
 
     try {
-        const conversations = await Conversation.find({
-            senderId: currentUserId 
-        })
-            .populate("receiverId", "name dp email")
-            .sort({ updatedAt: -1 });
+        const conversation=await Conversation.findOne({senderId:currentUserId,receiverId}); 
+        const messages = await Message.find({ conversationId: conversation._id })
+            .sort({ createdAt: 1 })
 
-        return NextResponse.json({ success: true, conversations }, { status: 200 });
+        return NextResponse.json({ success: true, messages }, { status: 200 });
+      
     } catch (error: any) {
         console.error("Error fetching conversations:", error);
         return NextResponse.json({

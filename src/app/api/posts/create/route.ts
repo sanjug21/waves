@@ -1,5 +1,5 @@
 import { dbConnect } from "@/lib/DataBase/dbConnect";
-import Post from "@/lib/models/Post";
+import Post from "@/lib/models/Post.model";
 import { PostSchema } from "@/lib/schema/post.schema";
 import { uploadImage } from "@/utils/post";
 import { NextRequest, NextResponse } from "next/server";

@@ -1,6 +1,7 @@
 import { getSocket } from "@/lib/socket";
 import { useAppSelector } from "@/store/hooks";
 import { IdProp, SendMessagePayload } from "@/types/types";
+import { set } from "mongoose";
 import { useEffect, useRef, useState } from "react";
 import { IoMdSend } from "react-icons/io";
 
@@ -44,10 +45,11 @@ export default function ChatTextField({ id }: IdProp) {
     }
 
     socket.emit("sendMessage", payload);
+    setMessage("");
   };
 
   return (
-    <div className="p-2 relative">
+    <div className="pt-1 pr-2 pl-2 relative h-14">
       <textarea
         ref={textareaRef}
         value={message}

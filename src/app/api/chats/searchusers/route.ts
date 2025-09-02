@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import User from "@/lib/models/User";
-import Follow from "@/lib/models/Follow";
+import User from "@/lib/models/User.model";
+import Follow from "@/lib/models/Follow.model";
 import { dbConnect } from "@/lib/DataBase/dbConnect";
 import { Types } from "mongoose";
 import { verifyAccessToken } from "@/utils/auth"; 
