@@ -68,7 +68,8 @@ export interface IdProp{
 export interface ChatMessage {
   _id: string;
   conversationId: string;
-  senderId: string; 
+  senderId: string;
+  receiverId: string;
   message?: string;
   image?: string;
   video?: string;

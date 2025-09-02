@@ -1,4 +1,3 @@
-import { dbConnect } from "@/lib/DataBase/dbConnect";
 import Conversation from "@/lib/models/Conversation.model";
 import Message from "@/lib/models/Message.model";
 import { SendMessagePayload } from "@/types/types";
@@ -17,11 +16,12 @@ export const sendMessage = async (io: Server, socket: Socket, data: SendMessageP
                         : data.file
                             ? "sent a file 📄"
                             : "";
-        
+
         let senderConversation = await Conversation.findOne({
             senderId: data.senderId,
             receiverId: data.receiverId,
         });
+
         if (!senderConversation) {
             senderConversation = await Conversation.create({
                 senderId: data.senderId,
@@ -51,7 +51,6 @@ export const sendMessage = async (io: Server, socket: Socket, data: SendMessageP
             receiverConversation.lastMessageSeen = false;
             await receiverConversation.save();
         }
-        
 
         const senderMessage = await Message.create({
             conversationId: senderConversation._id,
@@ -63,16 +62,14 @@ export const sendMessage = async (io: Server, socket: Socket, data: SendMessageP
             conversationId: receiverConversation._id,
             ...data,
         });
-        
+
         socket.emit("message_success", { status: "ok" });
 
-        // io.to(data.receiverId).emit("new_message", receiverMessage);
-        // io.to(data.senderId).emit("conversation", senderConversation);
-        // io.to(data.receiverId).emit("conversation", receiverConversation);
+        io.to(data.senderId).emit("messages", senderMessage);
+        io.to(data.receiverId).emit("messages", receiverMessage);
+
         const emitConversations = async (userId: string) => {
-            const updated = await Conversation.find({
-                senderId: userId 
-            })
+            const updated = await Conversation.find({ senderId: userId })
                 .populate("receiverId", "name dp email")
                 .sort({ updatedAt: -1 });
 

@@ -11,6 +11,7 @@ export enum MessageEnum {
 export interface Message extends Document {
     conversationId: mongoose.Types.ObjectId;
     senderId: mongoose.Types.ObjectId;
+    receiverId: mongoose.Types.ObjectId;
     message?: string;
     image?: string;
     video?: string;
@@ -25,6 +26,7 @@ const MessageSchema: Schema<Message> = new mongoose.Schema(
     {
         conversationId: { type: Schema.Types.ObjectId, ref: "Conversation", required: true },
         senderId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+        receiverId: { type: Schema.Types.ObjectId, ref: "User", required: true },
         message: { type: String },
         image: { type: String },
         video: { type: String },

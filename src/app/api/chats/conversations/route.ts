@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
     }
 
     const decodedPayload = verifyAccessToken(token);
-    if (!decodedPayload || !decodedPayload.id) {
+    if (!decodedPayload?.id) {
         return NextResponse.json({ error: "Invalid or expired token" }, { status: 401 });
     }
 
@@ -18,9 +18,7 @@ export async function GET(req: NextRequest) {
     const currentUserId = decodedPayload.id;
 
     try {
-        const conversations = await Conversation.find({
-            senderId: currentUserId 
-        })
+        const conversations = await Conversation.find({ senderId: currentUserId })
             .populate("receiverId", "name dp email")
             .sort({ updatedAt: -1 });
 

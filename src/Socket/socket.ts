@@ -1,11 +1,9 @@
 import 'dotenv/config';
 import  {createServer} from 'http';
 import {Server, Socket} from 'socket.io';
-import Conversation from '../lib/models/Conversation.model';
 import { dbConnect } from '../lib/DataBase/dbConnect';
 import { sendMessage } from './Message/sendMessage';
 import { SendMessagePayload } from '@/types/types';
-import { Conversations } from './SocketConversation/SocketConversation';
 
 const httpServer = createServer();
 const io = new Server(httpServer, {
@@ -22,12 +20,9 @@ const io = new Server(httpServer, {
             
             socket.on("join", (userId: string) => {
                 socket.join(userId);
-                console.log(`[Socket] User joined room: ${userId}`);
             });
-
             socket.on("sendMessage", async(payload: SendMessagePayload) => await sendMessage(io, socket, payload));
-            socket.on("conversations", async (userId: string) => {await Conversations(io, socket, userId);});
-
+           
             socket.on("disconnect", () => {
                 console.log(`[Socket] User disconnected`);
             });
