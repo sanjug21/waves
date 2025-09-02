@@ -36,13 +36,13 @@
 }
 
 .scrollbar-hidden-style::-webkit-scrollbar {
-  width: 6px;
+  width: 1px;
   background-color: transparent;
 }
 
 .scrollbar-hidden-style::-webkit-scrollbar-thumb {
   background-color: #a0aec0;
-  border-radius: 3px;
+  border-radius: 1px;
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -50,6 +50,16 @@
 .scrollbar-hidden-style:hover::-webkit-scrollbar-thumb,
 .scrollbar-hidden-style:active::-webkit-scrollbar-thumb {
   opacity: 1;
+}
+
+.scroll-invisible {
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scroll-invisible::-webkit-scrollbar {
+  display: none;
 }
 
 .loader2 {

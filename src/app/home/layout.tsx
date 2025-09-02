@@ -5,7 +5,7 @@ import { NavBar } from '@/components/NavBar';
 import { useRouter } from 'next/navigation';
 import { useAppSelector } from '@/store/hooks';
 import Loader from '@/components/Util/Loader';
-import Chat from '@/components/Chat';
+import Chat from '@/components/UserConversations';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();

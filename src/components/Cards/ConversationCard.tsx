@@ -20,7 +20,7 @@ export default function ConversationCard({
           : "bg-white hover:bg-gray-50"
       }`}
     >
-      {/* 🔔 New message badge */}
+      
       {isUnseen && (
         <span className="absolute top-2 right-3 bg-orange-500 text-white text-[10px] px-2 py-0.5 rounded-full font-semibold shadow-sm">
           New message

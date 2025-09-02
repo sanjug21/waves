@@ -1,6 +1,6 @@
 import { dbConnect } from "@/lib/DataBase/dbConnect";
-import Conversation from "@/lib/models/Conversation";
-import Message from "@/lib/models/Message";
+import Conversation from "@/lib/models/Conversation.model";
+import Message from "@/lib/models/Message.model";
 import { SendMessagePayload } from "@/types/types";
 import { Server, Socket } from "socket.io";
 
@@ -31,6 +31,7 @@ export const sendMessage = async (io: Server, socket: Socket, data: SendMessageP
             });
         } else {
             senderConversation.lastMessage = lastMessagePreview;
+            senderConversation.lastMessageSeen = true;
             await senderConversation.save();
         }
 
@@ -47,6 +48,7 @@ export const sendMessage = async (io: Server, socket: Socket, data: SendMessageP
             });
         } else {
             receiverConversation.lastMessage = lastMessagePreview;
+            receiverConversation.lastMessageSeen = false;
             await receiverConversation.save();
         }
         

@@ -1,11 +1,11 @@
 import 'dotenv/config';
 import  {createServer} from 'http';
 import {Server, Socket} from 'socket.io';
-import Conversation from '../lib/models/Conversation';
+import Conversation from '../lib/models/Conversation.model';
 import { dbConnect } from '../lib/DataBase/dbConnect';
 import { sendMessage } from './Message/sendMessage';
 import { SendMessagePayload } from '@/types/types';
-import { Conversations } from './Conversation/Conversation';
+import { Conversations } from './SocketConversation/SocketConversation';
 
 const httpServer = createServer();
 const io = new Server(httpServer, {

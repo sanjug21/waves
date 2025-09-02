@@ -1,4 +1,4 @@
-import Conversation from "@/lib/models/Conversation";
+import Conversation from "@/lib/models/Conversation.model";
 import { Server, Socket } from "socket.io";
 
 export const Conversations = async(io:Server,socket:Socket,id:string) => {

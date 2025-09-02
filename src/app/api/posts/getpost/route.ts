@@ -1,5 +1,5 @@
-import Like from "@/lib/models/Like";
-import Post from "@/lib/models/Post";
+import Like from "@/lib/models/Like.model";
+import Post from "@/lib/models/Post.model";
 import { NextRequest, NextResponse } from "next/server";
 
 

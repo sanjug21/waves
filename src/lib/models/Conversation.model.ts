@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import "./User";
+import "./User.model";
 
 export interface Conversation extends Document {
     senderId: Types.ObjectId;

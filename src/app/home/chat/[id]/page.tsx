@@ -1,18 +1,18 @@
-'use client'
+"use client";
+
 import ChatTextField from "@/components/ChatComponents/chatTextField";
+import MessagePage from "@/components/ChatComponents/MessagePage";
 import { getUser } from "@/hooks/profileHooks";
 import { UserDetails } from "@/types/types";
 import { useParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Chat() {
   const params = useParams();
   const id = params?.id as string;
-  const defImg = '/def.png';
+  const defImg = "/def.png";
 
   const [chatUser, setChatUser] = useState<UserDetails | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string>("");
 
   useEffect(() => {
     const fetchChatUser = async () => {
@@ -21,40 +21,31 @@ export default function Chat() {
         setChatUser(user);
       } catch (err) {
         console.error("Failed to fetch user:", err);
-        setError("Unable to load user details.");
       }
     };
     fetchChatUser();
   }, [id]);
 
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  useEffect(() => {
-    const textarea = textareaRef.current;
-    if (textarea) {
-      textarea.style.height = "auto";
-      textarea.style.height = `${Math.min(textarea.scrollHeight, 96)}px`;
-    }
-  }, [message]);
-
-  const isSendDisabled = message.trim() === "";
-
   return (
-    <div className="ChatBg h-[calc(100vh-75px)] flex flex-col justify-between text-white">
+    <div className="ChatBg h-[calc(100vh-75px)] flex flex-col text-white">
       {/* Header */}
       <div className="flex items-center space-x-4 bg-gradient-to-r from-[rgb(0,12,60)] to-[rgb(0,20,80)] p-2 shadow-lg backdrop-blur-md border-b border-blue-400">
         <img
           src={chatUser?.dp || defImg}
-          alt={`${chatUser?.name || 'User'}'s profile picture`}
+          alt={`${chatUser?.name || "User"}'s profile picture`}
           className="h-12 w-12 rounded-full object-cover shadow-sm"
         />
-        <div>
-          <h1 className="text-xl font-semibold text-white">{chatUser?.name}</h1>
-        </div>
+        <span className="text-lg font-semibold">{chatUser?.name}</span>
+      </div>
+
+      {/* Message Page */}
+      <div className="h-[calc(100%-131px)] flex-grow overflow-hidden p-1">
+        <MessagePage id={id} />
       </div>
 
       {/* Chat Input */}
-      <ChatTextField id={id} />
+        <ChatTextField id={id} />
+      
     </div>
   );
 }

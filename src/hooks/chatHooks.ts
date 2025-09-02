@@ -13,9 +13,19 @@ export async function searchChatUser(searchQuery: string) {
 export async function getUserConversations() {
     try {
         const response = await API.get(`/chats/conversations`);
-        return response.data;
+        return response.data.conversations;
     } catch (error) {
         console.error("Error fetching user conversations:", error);
+        throw error;
+    }
+}
+
+export async function getInitalChats(receiverId: string) {
+    try {
+        const response = await API.get('/chats/initialChat/', { params: { receiverId } });
+        return response.data.messages;
+    } catch (error) {
+        console.error("Error fetching initial chats:", error);
         throw error;
     }
 }

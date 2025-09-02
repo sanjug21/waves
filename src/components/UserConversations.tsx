@@ -3,7 +3,7 @@
 import { ConversationDetails, UserDetails } from "@/types/types";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { searchChatUser } from "@/hooks/chatHooks";
+import { getUserConversations, searchChatUser } from "@/hooks/chatHooks";
 import { Spinner } from "./Util/Loader";
 import { getSocket } from "@/lib/socket";
 import { useAppSelector } from "@/store/hooks";
@@ -19,21 +19,48 @@ export default function Chat() {
 
   useEffect(() => {
     if (!currentUser?._id) return;
-    const socket = getSocket();
-    socket.emit("join", currentUser._id);
-    socket.emit("conversations", currentUser._id);
 
-    socket.on("conversation", (updatedList: ConversationDetails[]) => {
-      const sorted = [...updatedList].sort((a, b) => {
-        if (a.lastMessageSeen === b.lastMessageSeen) {
-          return (
-            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-          );
-        }
-        return a.lastMessageSeen ? 1 : -1;
-      });
-      setConversations(sorted);
-    });
+    const socket = getSocket();
+    let initialized = false;
+
+    const loadInitialConversations = async () => {
+      setLoading(true);
+      try {
+        const initial = await getUserConversations();
+        const sorted = [...initial].sort((a, b) => {
+          if (a.lastMessageSeen === b.lastMessageSeen) {
+            return (
+              new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+            );
+          }
+          return a.lastMessageSeen ? 1 : -1;
+        });
+        setConversations(sorted);
+        initialized = true;
+
+        socket.emit("join", currentUser._id);
+        socket.emit("conversations", currentUser._id);
+        socket.on("conversation", (updatedList: ConversationDetails[]) => {
+          if (!initialized) return;
+          const sorted = [...updatedList].sort((a, b) => {
+            if (a.lastMessageSeen === b.lastMessageSeen) {
+              return (
+                new Date(b.updatedAt).getTime() -
+                new Date(a.updatedAt).getTime()
+              );
+            }
+            return a.lastMessageSeen ? 1 : -1;
+          });
+          setConversations(sorted);
+        });
+      } catch (err) {
+        console.error("Initial fetch failed:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadInitialConversations();
 
     return () => {
       socket.off("conversation");
@@ -63,7 +90,6 @@ export default function Chat() {
     }
   }, [searchQuery]);
 
- 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
