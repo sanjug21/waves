@@ -205,6 +205,43 @@
 }
 
 
+
+@keyframes heartPop {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+
+  30% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 1;
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+
+.heartBurst {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, orange, rgb(200, 20, 200), fuchsia);
+  clip-path: path("M40 14.73c-9.42-18.98-40-13.55-40 10.9 0 24.23 33.01 36.46 40 51.04 6.99-14.58 40-26.8 40-51.04 0-24.42-30.57-29.91-40-10.9z");
+  animation: heartPop 800ms ease-out forwards;
+  pointer-events: none;
+  z-index: 20;
+}
+
 /* rgb(0, 7, 35)
 rgb(0, 6, 34) 
 rgb(0,12,60)

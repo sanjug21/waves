@@ -6,7 +6,7 @@ export async function toggleLike(postId: string) {
         return {
             success: true,
             message: response.data.message || "Successfully toggled like",
-            data: response.data,
+            data: response.data.like,
         };
     } catch (error: any) {
         return {
@@ -15,3 +15,4 @@ export async function toggleLike(postId: string) {
         };
     }
 }
+

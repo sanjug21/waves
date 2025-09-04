@@ -11,7 +11,8 @@ export  async function GET(req:NextRequest){
             .sort({ createdAt: -1 })
             .lean();
 
-        // const likes=await Like.find({postId:{$in:posts.map(p=>p._id)}}).lean();
+        
+
 
         return NextResponse.json({
             success: true,
