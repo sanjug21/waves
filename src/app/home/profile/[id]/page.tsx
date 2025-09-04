@@ -14,9 +14,8 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-3xl text-white font-sans h-[calc(100vh-75px)] bg-blue-200">
-      {/* Profile Header */}
+      
       <UserProfile id={id} />
-
 
       <div className="sticky top-1 z-10 NavBg flex justify-around p-1 pl-2 pr-2 text-xl rounded-t-lg">
         <button
@@ -39,7 +38,6 @@ export default function ProfilePage() {
         </button>
       </div>
 
-      {/* Tab Content */}
       <div className="mt-4">
         {activeTab === 'posts' && <ProfilePosts id={id} />}
         {activeTab === 'following' && <UserFollowings id={id} />}

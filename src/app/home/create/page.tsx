@@ -80,7 +80,7 @@ export default function CreatePost() {
   const userName = user?.name ;
 
   return (
-    <div className="w-full h-full  flex justify-center items-start overflow-y-auto relative p-4 bg-blue-200">
+    <div className="w-full h-full  flex justify-center items-start overflow-y-auto relative p-4 ">
       {loading && (
         <div className="fixed inset-0 w-full h-full bg-gray-500/50 backdrop-blur-[2px] flex justify-center items-center z-50">
           <div className="loader"></div>

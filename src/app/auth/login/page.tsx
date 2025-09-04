@@ -82,8 +82,8 @@ export default function Login() {
   const isLoginButtonDisabled = loading || password.length < 8;
 
   return (
-    <div className="min-h-screen bg-cover bg-center lendingPage flex flex-col items-center justify-center p-4 overflow-hidden font-sans">
-      <div className="relative bg-opacity-15 backdrop-blur-xl rounded-3xl shadow-2xl border border-blue-700 border-opacity-30 p-8 max-w-md w-full text-center animate-fade-in flex flex-col items-center justify-center">
+    <div className="min-h-screen bg-cover bg-center lendingPage flex flex-col items-center justify-center p-4 overflow-hidden font-sans ">
+      <div className="relative bg-opacity-15 backdrop-blur-xl rounded-3xl shadow-2xl border border-blue-700 border-opacity-30 p-8 max-w-md w-full text-center animate-fade-in flex flex-col items-center justify-center bg-black/40">
         <h1 className="text-white text-4xl sm:text-5xl font-semibold mb-8 drop-shadow-md">
           Welcome to <span className="bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">Waves</span>
         </h1>
@@ -138,8 +138,8 @@ export default function Login() {
               disabled={isLoginButtonDisabled}
               className={`group relative mt-10 w-full border-2 text-lg font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl active:scale-95 focus:outline-none focus:ring-2 focus:ring-opacity-75
                 ${isLoginButtonDisabled
-                  ? 'border-gray-600 text-gray-500 cursor-not-allowed'
-                  : 'border-blue-400 text-blue-300 hover:border-blue-300 hover:text-white hover:bg-blue-600 focus:ring-blue-400'
+                  ? 'border-gray-400 text-gray-400 cursor-not-allowed'
+                  : 'border-blue-400 text-blue-300 hover:border-orange-300 hover:text-white hover:bg-orange-600 focus:ring-blue-400'
                 }`}
             >
               <span className="relative z-10">

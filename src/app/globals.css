@@ -2,7 +2,7 @@
 @import "tailwindcss";
 
 .lendingPage {
-  background-image: url('/back.png');
+  background-image: url('/c17.png');
   background-size: cover;
   background-position: center;
 }
@@ -14,16 +14,22 @@
 }
 
 .ChatBg{
-  background-image: url('/c2.png');
+  background-image: url('/c15.png');
+  background-size: cover;
+  background-position: center;
+}
+.ChatHeader{
+  background-image: url('/c10.png');
   background-size: cover;
   background-position: center;
 }
 
-.ConversationPageBg {
-  background-image: url('/c9.png');
+.HomeBg {
+  background-image: url('/c18.png');
   background-size: cover;
   background-position: center;
 }
+
 
 .ProfileBg{
   background-image: url('/c4.png');

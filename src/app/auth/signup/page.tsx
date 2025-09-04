@@ -102,18 +102,25 @@ export default function SignUp() {
 
   return (
     <div className="min-h-screen bg-cover bg-center lendingPage flex flex-col items-center justify-center p-4 overflow-hidden font-sans">
-      <div className="relative bg-opacity-15 backdrop-blur-xl rounded-3xl shadow-2xl border border-blue-700 border-opacity-30 p-8 max-w-md w-full text-center transform transition-all duration-500 ease-out animate-fade-in flex flex-col items-center justify-center ">
+      <div className="relative bg-opacity-15 backdrop-blur-xl rounded-3xl shadow-2xl border border-blue-700 border-opacity-30 p-8 max-w-md w-full text-center transform transition-all duration-500 ease-out animate-fade-in flex flex-col items-center justify-center bg-black/40">
         <h1 className="relative z-10 text-white text-4xl sm:text-5xl font-semibold mb-8 leading-tight drop-shadow-md text-center">
-          Join <span className="bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">Waves</span>
+          Join{" "}
+          <span className="bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">
+            Waves
+          </span>
         </h1>
         <form onSubmit={handleSignUp} className="space-y-4 w-full" noValidate>
           <div>
-            <label htmlFor="name" className={baseLabelClass}>Name</label>
+            <label htmlFor="name" className={baseLabelClass}>
+              Name
+            </label>
             <input
               ref={nameRef}
               type="text"
               id="name"
-              className={`${baseInputClass} ${errors.name ? 'border-2 border-red-600' : ''}`}
+              className={`${baseInputClass} ${
+                errors.name ? "border-2 border-red-600" : ""
+              }`}
               placeholder="Enter your name"
               aria-label="Name"
               value={name}
@@ -123,16 +130,24 @@ export default function SignUp() {
               }}
               disabled={isSigningUp}
             />
-            {errors.name && <p className="text-red-400 text-sm mt-1 text-left">{errors.name}</p>}
+            {errors.name && (
+              <p className="text-red-400 text-sm mt-1 text-left">
+                {errors.name}
+              </p>
+            )}
           </div>
 
           <div>
-            <label htmlFor="email" className={baseLabelClass}>Email</label>
+            <label htmlFor="email" className={baseLabelClass}>
+              Email
+            </label>
             <input
               ref={emailRef}
               type="email"
               id="email"
-              className={`${baseInputClass} ${errors.email ? 'border-2 border-red-600' : ''}`}
+              className={`${baseInputClass} ${
+                errors.email ? "border-2 border-red-600" : ""
+              }`}
               placeholder="Enter your email"
               aria-label="Email"
               value={email}
@@ -142,35 +157,51 @@ export default function SignUp() {
               }}
               disabled={isSigningUp}
             />
-            {errors.email && <p className="text-red-400 text-sm mt-1 text-left">{errors.email}</p>}
+            {errors.email && (
+              <p className="text-red-400 text-sm mt-1 text-left">
+                {errors.email}
+              </p>
+            )}
           </div>
 
           <div className="relative">
-            <label htmlFor="password" className={baseLabelClass}>Password</label>
+            <label htmlFor="password" className={baseLabelClass}>
+              Password
+            </label>
             <input
               ref={passwordRef}
               type="password"
               id="password"
-              className={`${baseInputClass} ${errors.password ? 'border-2 border-red-600' : ''}`}
+              className={`${baseInputClass} ${
+                errors.password ? "border-2 border-red-600" : ""
+              }`}
               placeholder="Enter your password"
               aria-label="Password"
               value={password}
-              onChange={(e)=>{
+              onChange={(e) => {
                 setPassword(e.target.value);
                 setErrors({});
               }}
               disabled={isSigningUp}
             />
-            {errors.password && <p className="text-red-400 text-sm mt-1 text-left">{errors.password}</p>}
+            {errors.password && (
+              <p className="text-red-400 text-sm mt-1 text-left">
+                {errors.password}
+              </p>
+            )}
           </div>
 
           <div className="relative">
-            <label htmlFor="confirmPassword" className={baseLabelClass}>Confirm Password</label>
+            <label htmlFor="confirmPassword" className={baseLabelClass}>
+              Confirm Password
+            </label>
             <input
               ref={confirmPasswordRef}
-              type={showConfirmPassword ? 'text' : 'password'}
+              type={showConfirmPassword ? "text" : "password"}
               id="confirmPassword"
-              className={`${baseInputClass} pr-10 ${errors.confirmPassword ? 'border-2 border-red-600' : ''}`}
+              className={`${baseInputClass} pr-10 ${
+                errors.confirmPassword ? "border-2 border-red-600" : ""
+              }`}
               placeholder="Confirm your password"
               aria-label="Confirm Password"
               value={confirmPassword}
@@ -185,35 +216,50 @@ export default function SignUp() {
               tabIndex={-1}
               onClick={toggleConfirmPasswordVisibility}
               className="absolute top-2/3 right-3 -translate-y-1/2 flex items-center text-black focus:outline-none rounded-full bg-transparent p-1"
-              aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+              aria-label={
+                showConfirmPassword
+                  ? "Hide confirm password"
+                  : "Show confirm password"
+              }
               disabled={isSigningUp}
             >
-              {showConfirmPassword ? <FiEye className="h-5 w-5" /> : <FiEyeOff className="h-5 w-5" />}
+              {showConfirmPassword ? (
+                <FiEye className="h-5 w-5" />
+              ) : (
+                <FiEyeOff className="h-5 w-5" />
+              )}
             </button>
-            {errors.confirmPassword && <p className="text-red-400 text-sm mt-1 text-left">{errors.confirmPassword}</p>}
+            {errors.confirmPassword && (
+              <p className="text-red-400 text-sm mt-1 text-left">
+                {errors.confirmPassword}
+              </p>
+            )}
           </div>
 
-          
           <button
             type="submit"
             disabled={isSigningUp}
             className={`group relative block mt-10 w-full border-2 py-3 px-8 rounded-full text-lg font-semibold transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl active:scale-95 focus:outline-none focus:ring-2 focus:ring-opacity-75
-              ${isSigningUp
-                ? 'border-gray-600 text-gray-500 cursor-not-allowed'
-                : 'border-blue-400 text-blue-300 hover:border-blue-300 hover:text-white hover:bg-blue-600 focus:ring-blue-400'
+              ${
+                isSigningUp
+                  ? "border-gray-400 text-gray-400 cursor-not-allowed"
+                  : "border-blue-400 text-blue-300 hover:border-orange-300 hover:text-white hover:bg-orange-600 focus:ring-blue-400"
               }`}
             aria-label="Create Account"
           >
             <span className="relative z-10">
-              {isSigningUp ? 'Creating Account...' : 'Create Account'}
+              {isSigningUp ? "Creating Account..." : "Create Account"}
             </span>
             <span className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></span>
           </button>
         </form>
 
         <p className="mt-6 text-center text-gray-200">
-          Already have an account?{' '}
-          <Link href="/auth/login" className="text-blue-400 hover:text-blue-300 font-medium transition duration-150 ease-in-out">
+          Already have an account?{" "}
+          <Link
+            href="/auth/login"
+            className="text-blue-400 hover:text-blue-300 font-medium transition duration-150 ease-in-out"
+          >
             Log In
           </Link>
         </p>

@@ -49,7 +49,9 @@ const PostCard = ({ post }: { post: Post }) => {
             src={userProfilePic}
             alt={`${post.userId.name}'s profile`}
             className="h-10 w-10 rounded-full object-cover border border-gray-500 cursor-pointer"
-            onError={(e) => { e.currentTarget.src = defaultDp; }}
+            onError={(e) => {
+              e.currentTarget.src = defaultDp;
+            }}
             onClick={() => setShowDpPreview(true)}
           />
           <div className="flex flex-col flex-grow">
@@ -82,23 +84,25 @@ const PostCard = ({ post }: { post: Post }) => {
                 </button>
               )}
               {isExpanded && (
-                 <button
-                 onClick={toggleExpanded}
-                 className="text-indigo-400 hover:underline text-xs mt-1"
-               >
-                 Show less
-               </button>
+                <button
+                  onClick={toggleExpanded}
+                  className="text-indigo-400 hover:underline text-xs mt-1"
+                >
+                  Show less
+                </button>
               )}
             </div>
           )}
 
           {post.imageUrl && (
-            <div className="max-h-[500px] bg-black/20">
+            <div className="max-h-[500px] bg-black/20  overflow-hidden">
               <img
                 src={post.imageUrl}
                 alt="Post content"
-                className="h-full w-full object-contain cursor-pointer"
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                className="h-full w-full object-cover cursor-pointer"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = "none";
+                }}
                 onClick={() => setShowImagePreview(true)}
               />
             </div>

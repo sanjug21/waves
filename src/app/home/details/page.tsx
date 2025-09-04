@@ -152,7 +152,7 @@ export default function ProfileImageEditor() {
       </div>
 
       {/* Profile Details Form */}
-      <div className="relative w-full max-w-3xl mx-auto bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8 space-y-6">
+      <div className="relative w-full max-w-3xl mx-auto bg-white/50 backdrop-blur-md rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8 space-y-6">
         {!editMode ? (
           <button
             onClick={toggleEdit}
