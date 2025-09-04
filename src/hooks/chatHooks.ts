@@ -12,7 +12,7 @@ export async function searchChatUser(searchQuery: string) {
 
 export async function getUserConversations() {
     try {
-        const response = await API.get(`/chats/conversations`);
+        const response = await API.post(`/chats/conversations`);
         return response.data.conversations;
     } catch (error) {
         console.error("Error fetching user conversations:", error);
@@ -20,9 +20,9 @@ export async function getUserConversations() {
     }
 }
 
-export async function getInitalChats(receiverId: string) {
+export async function getInitialChats(receiverId: string) {
     try {
-        const response = await API.get('/chats/initialChat/', { params: { receiverId } });
+        const response = await API.post('/chats/initialChat/', { receiverId });
         return response.data.messages;
     } catch (error) {
         console.error("Error fetching initial chats:", error);

@@ -1,12 +1,12 @@
 import Post from "@/lib/models/Post.model";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
     try {
-        const { searchParams } = new URL(req.url);
-        const page = parseInt(searchParams.get('page') || '1', 10);
-        const limit = parseInt(searchParams.get('limit') || '10', 10);
-        const userId = searchParams.get('userId');
+        const body = await req.json();
+        const page = parseInt(body.page || '1', 10);
+        const limit = parseInt(body.limit || '10', 10);
+        const userId = body.userId?.trim();
 
         if (!userId) {
             return NextResponse.json({
@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
         }
 
         const skip = (page - 1) * limit;
-        const query = { userId: userId };
+        const query = { userId };
 
         const totalPosts = await Post.countDocuments(query);
 
@@ -31,8 +31,8 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({
             success: true,
             message: "User posts fetched successfully",
-            posts: posts,
-            hasMore: hasMore
+            posts,
+            hasMore
         }, { status: 200 });
 
     } catch (error: any) {

@@ -4,9 +4,10 @@ import { verifyAccessToken } from "@/utils/auth";
 import Message from "@/lib/models/Message.model";
 import Conversation from "@/lib/models/Conversation.model";
 
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
     const token = req.cookies.get("accessToken")?.value;
-    const receiverId = req.nextUrl.searchParams.get("receiverId");
+    const body = await req.json();
+    const { receiverId } = body;
 
     if (!token) {
         return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
