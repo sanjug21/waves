@@ -3,7 +3,7 @@ import { dbConnect } from "@/lib/DataBase/dbConnect";
 import { verifyAccessToken } from "@/utils/auth";
 import Conversation from "@/lib/models/Conversation.model";
 
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
     const token = req.cookies.get("accessToken")?.value;
     if (!token) {
         return NextResponse.json({ error: "Not authenticated" }, { status: 401 });

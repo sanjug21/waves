@@ -1,6 +1,6 @@
 "use client";
 
-import { getInitalChats } from "@/hooks/chatHooks";
+import { getInitialChats } from "@/hooks/chatHooks";
 import { useAppSelector } from "@/store/hooks";
 import { ChatMessage, IdProp } from "@/types/types";
 import { useEffect, useRef, useState } from "react";
@@ -15,7 +15,7 @@ export default function MessagePage({ id }: IdProp) {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await getInitalChats(id);
+        const response = await getInitialChats(id);
         const sorted = [...response].sort(
           (a, b) =>
             new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime()

@@ -2,13 +2,14 @@ import { dbConnect } from "@/lib/DataBase/dbConnect";
 import Follow from "@/lib/models/Follow.model";
 import { verifyAccessToken } from "@/utils/auth";
 import { NextRequest, NextResponse } from "next/server";
+import mongoose from "mongoose";
 
-export async function GET(req: NextRequest) {
-    const { searchParams } = req.nextUrl;
-    const targetUserId = searchParams.get("id");
+export async function POST(req: NextRequest) {
+    const body = await req.json();
+    const targetUserId = body.targetUserId?.trim();
 
-    if (!targetUserId) {
-        return NextResponse.json({ error: "Target user ID is required" }, { status: 400 });
+    if (!targetUserId || !mongoose.Types.ObjectId.isValid(targetUserId)) {
+        return NextResponse.json({ error: "Invalid or missing targetUserId" }, { status: 400 });
     }
 
     const token = req.cookies.get("accessToken")?.value;
@@ -19,7 +20,7 @@ export async function GET(req: NextRequest) {
 
     const decoded = verifyAccessToken(token);
 
-    if (!decoded) {
+    if (!decoded?.id) {
         return NextResponse.json({ error: "Invalid or expired token" }, { status: 401 });
     }
 
@@ -34,8 +35,12 @@ export async function GET(req: NextRequest) {
         });
 
         return NextResponse.json({ isFollowing: !!followDoc }, { status: 200 });
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error checking follow status:", error);
-        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+        return NextResponse.json({
+            success: false,
+            message: "Internal server error",
+            error: error.message
+        }, { status: 500 });
     }
 }

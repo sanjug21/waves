@@ -5,8 +5,6 @@ import { uploadImage } from "@/utils/post";
 import { verifyAccessToken } from "@/utils/auth";
 import { NextRequest, NextResponse } from "next/server";
 import ProfilePicture from "@/lib/models/ProfilePicture.model";
-import { de } from "zod/v4/locales";
-
 export async function POST(req: NextRequest) {
     try {
         await dbConnect();

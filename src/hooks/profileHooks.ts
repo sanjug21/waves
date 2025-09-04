@@ -3,8 +3,8 @@ import { Post, UserDetails } from "../types/types";
 
 export async function getUser(userId: string) {
     try {
-        const response = await API.get(`/user/getDetails?id=${userId}`);
-        return response.data;
+        const response = await API.post("/user/getDetails", { userId });
+        return response.data.user;
     } catch (error) {
         console.error("Error fetching user details:", error);
         throw error;
@@ -14,7 +14,7 @@ export async function getUser(userId: string) {
 
 export async function checkIsFollowing(targetUserId: string): Promise<{ isFollowing: boolean }> {
     try {
-        const response = await API.get(`/user/isFollowing?id=${targetUserId}`);
+        const response = await API.post("/user/isFollowing", { targetUserId });
         return response.data;
     } catch (error) {
         console.error("Error checking follow status:", error);
@@ -22,9 +22,10 @@ export async function checkIsFollowing(targetUserId: string): Promise<{ isFollow
     }
 }
 
+
 export async function getFollowers(userId: string): Promise<UserDetails[]> {
     try {
-        const response = await API.get(`/user/getFollowers?id=${userId}`);
+        const response = await API.post("/user/getFollowers", { userId });
         return response.data.followers;
     } catch (error) {
         console.error("Error fetching followers:", error);
@@ -32,9 +33,10 @@ export async function getFollowers(userId: string): Promise<UserDetails[]> {
     }
 }
 
+
 export async function getFollowing(userId: string): Promise<UserDetails[]> {
     try {
-        const response = await API.get(`/user/getFollowings?id=${userId}`);
+        const response = await API.post("/user/getFollowings", { userId });
         return response.data.followings;
     } catch (error) {
         console.error("Error fetching followings:", error);
@@ -53,16 +55,16 @@ export async function followUnfollowUser(userId: string) {
     }
 }
 
-export async function getPosts(page: number, limit: number, userId: string): Promise<{ posts: Post[], hasMore: boolean }> {
+export async function getPosts(page: number, limit: number, userId: string): Promise<{ posts: Post[]; hasMore: boolean }> {
     try {
-        const url = `/posts/userposts?page=${page}&limit=${limit}&userId=${userId}`;
-        const response = await API.get(url);
+        const response = await API.post("/posts/userposts", { page, limit, userId });
         return response.data;
     } catch (error) {
         console.error("Error fetching posts:", error);
         throw error;
     }
 }
+
 
 export async function updateProfileImage(image: File): Promise<{ dp: string }> {
     try {

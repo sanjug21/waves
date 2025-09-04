@@ -2,13 +2,14 @@ import { dbConnect } from "@/lib/DataBase/dbConnect";
 import Follow from "@/lib/models/Follow.model";
 import User from "@/lib/models/User.model";
 import { NextRequest, NextResponse } from "next/server";
+import mongoose from "mongoose";
 
-export async function GET(req: NextRequest) {
-    const { searchParams } = req.nextUrl;
-    const userId = searchParams.get("id");
+export async function POST(req: NextRequest) {
+    const body = await req.json();
+    const userId = body.userId?.trim();
 
-    if (!userId) {
-        return new Response("User ID is required", { status: 400 });
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+        return NextResponse.json({ error: "Invalid or missing userId" }, { status: 400 });
     }
 
     try {
@@ -28,8 +29,12 @@ export async function GET(req: NextRequest) {
         const formattedFollowings = followings.map(f => f.following);
 
         return NextResponse.json({ followings: formattedFollowings }, { status: 200 });
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error fetching followings:", error);
-        return new Response("Internal Server Error", { status: 500 });
+        return NextResponse.json({
+            success: false,
+            message: "Internal Server Error",
+            error: error.message
+        }, { status: 500 });
     }
 }
