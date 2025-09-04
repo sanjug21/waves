@@ -24,7 +24,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   if (loading || !isAuthenticated) return <div className="lendingPage"><Loader /></div>;
 
   return (
-    <div className="h-screen ConversationPageBg flex flex-col  ">
+    <div className="h-screen HomeBg flex flex-col  ">
       <div className="sticky top-0 z-50 bg-white shadow-md h-[75px]">
         <NavBar />
       </div>
