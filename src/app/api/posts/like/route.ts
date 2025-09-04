@@ -30,11 +30,11 @@ export async function POST(req: NextRequest) {
 
         if (existingLike) {
             await Like.deleteOne({ _id: existingLike._id });
-            return NextResponse.json({ success: true, message: "Unliked Successfully" }, { status: 200 });
+            return NextResponse.json({ success: true, message: "Unliked Successfully", like: false }, { status: 200 });
         }
 
         const newLike = await Like.create({ PostId: postId, UserId: currentUserId });
-        return NextResponse.json({ success: true, message: "Liked Successfully", like: newLike }, { status: 201 });
+        return NextResponse.json({ success: true, message: "Liked Successfully", like: true }, { status: 201 });
 
     } catch (err) {
         console.error("Toggle Like Error:", err);
