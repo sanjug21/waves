@@ -1,3 +1,5 @@
+
+import Like from "@/lib/models/Like.model";
 import Post from "@/lib/models/Post.model";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -24,14 +26,46 @@ export async function POST(req: NextRequest) {
             .populate('userId', 'name dp')
             .sort({ createdAt: -1 })
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            .lean();
+
+        if (posts.length === 0) {
+            return NextResponse.json({
+                success: true,
+                message: "User posts fetched successfully",
+                posts: [],
+                hasMore: false
+            }, { status: 200 });
+        }
+
+        const postIds = posts.map(post => post._id);
+
+        const likesData = await Like.find({ PostId: { $in: postIds } })
+            .populate('UserId', 'name dp')
+            .lean();
+
+        const likesMap = new Map<string, any[]>();
+        likesData.forEach(like => {
+            const postIdStr = like.PostId.toString();
+            if (!likesMap.has(postIdStr)) {
+                likesMap.set(postIdStr, []);
+            }
+            if (like.UserId) {
+                likesMap.get(postIdStr)?.push(like.UserId);
+            }
+        });
+
+        const postsWithLikes = posts.map(post => ({
+            ...post,
+            likes: likesMap.get((post as any)._id.toString()) || []
+        }));
 
         const hasMore = (page * limit) < totalPosts;
 
         return NextResponse.json({
             success: true,
             message: "User posts fetched successfully",
-            posts,
+            posts: postsWithLikes,
             hasMore
         }, { status: 200 });
 
