@@ -8,5 +8,5 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src/socket.ts"]
+  "include": ["src/Socket/socket.ts"]
 }
