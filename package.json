@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  
   "scripts": {
     "dev": "concurrently -n \"Next,Socket\" -c \"cyan,magenta\" --kill-others-on-fail \"next dev --turbopack\" \"tsx watch src/socket/socket.ts\"",
-    "build": "npm run build:next && npm run build:socket",
-    "build:next": "next build",
-    "build:socket": "tsc --project tsconfig.socket.json",
-    "start": "concurrently -n \"Next,Socket\" --kill-others-on-fail \"next start\" \"node dist/socket.js\"",
+    "build": "next build",
+    "start": "NODE_ENV=production node server.js",
     "lint": "next lint"
   },
+
   "dependencies": {
     "@reduxjs/toolkit": "^2.8.2",
     "axios": "^1.11.0",
