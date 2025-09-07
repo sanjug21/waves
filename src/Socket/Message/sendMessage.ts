@@ -1,6 +1,6 @@
-import Conversation from "@/lib/models/Conversation.model";
-import Message from "@/lib/models/Message.model";
-import { SendMessagePayload } from "@/types/types";
+import Conversation from "../../lib/models/Conversation.model.js";
+import Message from "../../lib/models/Message.model.js";
+import { SendMessagePayload } from "../../types/types.js";
 import { Server, Socket } from "socket.io";
 
 export const sendMessage = async (io: Server, socket: Socket, data: SendMessagePayload) => {

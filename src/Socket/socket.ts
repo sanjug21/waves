@@ -1,8 +1,8 @@
 import 'dotenv/config';
 import  {createServer} from 'http';
 import {Server, Socket} from 'socket.io';
-import { dbConnect } from '../lib/DataBase/dbConnect';
-import { sendMessage } from './Message/sendMessage';
+import { dbConnect } from '@/lib/DataBase/dbConnect';
+import { sendMessage } from '@/Socket/Message/sendMessage';
 import { SendMessagePayload } from '@/types/types';
 
 const httpServer = createServer();
