@@ -21,6 +21,7 @@
 
     "preview": "npm run build && npm run start"
   },
+
   "dependencies": {
     "@reduxjs/toolkit": "^2.8.2",
     "axios": "^1.11.0",
