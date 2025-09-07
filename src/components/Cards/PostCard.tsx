@@ -150,6 +150,7 @@ const PostCard = ({ post }: { post: Post }) => {
           {post.imageUrl && (
             <div
               className="max-h-[500px] bg-black/20 overflow-hidden cursor-pointer"
+              onClick={() => setShowImagePreview(true)}
               onDoubleClick={handleDoubleClickLike}
             >
               <img

@@ -22,9 +22,8 @@ export async function PATCH(req: NextRequest) {
         
         const body = await req.json();
         
-        
         const parsedData = UpdateProfileSchema.parse(body);
-       console.log(parsedData)
+        console.log(parsedData)
         const updatedUser = await User.findByIdAndUpdate(decoded.id, parsedData, {
             new: true,
         });

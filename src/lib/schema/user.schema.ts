@@ -17,10 +17,18 @@ export const LoginSchema = z.object({
 
 export const nicknameSchema = z.string().trim().max(30, "Nickname must not exceed 30 characters").optional();
 export const bioSchema = z.string().trim().max(160, "Bio must not exceed 160 characters").optional();
-// export const phoneSchema = z.string().trim().regex(/^[0-9]{10,15}$/, "Invalid phone number").optional();
-// export const dobSchema = z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format (YYYY-MM-DD)").optional();
 export const addressSchema = z.string().trim().max(100, "Address must not exceed 100 characters").optional();
-export const genderSchema = z.enum(["male", "female", "other"]).optional();
+
+export const genderSchema = z.preprocess(
+  (val) => {
+    if (typeof val === "string" && val.trim() === "") return undefined;
+    if (typeof val === "string") return val.toLowerCase();
+    return val;
+  },
+  z.enum(["male", "female", "other"]).optional()
+);
+
+
 
 export const phoneSchema = z.preprocess(
   (value) => (value === "" ? undefined : value),
@@ -40,4 +48,4 @@ export const UpdateProfileSchema = z.object({
   dob: dobSchema,
   address: addressSchema,
   gender: genderSchema,
-}).partial();;
+}).partial();

@@ -75,7 +75,10 @@ export default function UserProfile({ id }: IdProp) {
         <div className="absolute inset-0 bg-gradient-to-r from-[rgb(0,12,60)] to-purple-700 opacity-10 pointer-events-none" />
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 relative z-10">
           <div className="relative group">
-            <button onClick={() => setShowPreview(true)} className="focus:outline-none">
+            <button
+              onClick={() => setShowPreview(true)}
+              className="focus:outline-none"
+            >
               <img
                 src={profileUser?.dp || "/def.png"}
                 alt={`${profileUser?.name}'s profile`}
@@ -99,20 +102,39 @@ export default function UserProfile({ id }: IdProp) {
                   disabled={actionLoading}
                   className={`px-5 py-2 rounded-full font-semibold transition-all duration-200 ${
                     isFollowing
-                      ? "bg-red-600 hover:bg-red-700 text-white"
-                      : "bg-blue-600 hover:bg-blue-700 text-white"
+                      ? "bg-gradient-to-br from bg-red-700 to-red-900 hover:scale-105 text-white"
+                      : "bg-gradient-to-br from-orange-600  to-purple-700 hover:scale-105 transition-transform  text-white"
                   }`}
                 >
                   {actionLoading ? (
-                    <svg className="w-5 h-5 animate-spin text-white" viewBox="0 0 24 24" fill="none">
-                      <circle cx="12" cy="12" r="10" stroke="white" strokeWidth="4" className="opacity-25" />
-                      <path fill="white" d="M12 2a10 10 0 0 1 10 10h-4a6 6 0 0 0-6-6V2z" className="opacity-75" />
+                    <svg
+                      className="w-5 h-5 animate-spin text-white"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                    >
+                      <circle
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="white"
+                        strokeWidth="4"
+                        className="opacity-25"
+                      />
+                      <path
+                        fill="white"
+                        d="M12 2a10 10 0 0 1 10 10h-4a6 6 0 0 0-6-6V2z"
+                        className="opacity-75"
+                      />
                     </svg>
-                  ) : isFollowing ? "Unfollow" : "Follow"}
+                  ) : isFollowing ? (
+                    "Unfollow"
+                  ) : (
+                    "Follow"
+                  )}
                 </button>
-                <button className="px-5 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium transition-all duration-200">
+                <Link href={`/home/chat/${id}`} className="px-5 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium transition-all duration-200">
                   Message
-                </button>
+                </Link>
               </div>
             )}
             {error && <p className="text-red-500 mt-4">{error}</p>}
