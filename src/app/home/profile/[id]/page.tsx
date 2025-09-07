@@ -13,8 +13,8 @@ export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<'posts' | 'following' | 'followers'>('posts');
 
   return (
-    <div className="max-w-3xl text-white font-sans h-[calc(100vh-75px)] bg-blue-200">
-      
+    <div className="w-full h-full text-white font-sans min-h-[calc(100vh-75px)] bg-blue-100">
+
       <UserProfile id={id} />
 
       <div className="sticky top-1 z-10 NavBg flex justify-around p-1 pl-2 pr-2 text-xl rounded-t-lg">
@@ -38,7 +38,7 @@ export default function ProfilePage() {
         </button>
       </div>
 
-      <div className="mt-4">
+      <div className="mt-4 ">
         {activeTab === 'posts' && <ProfilePosts id={id} />}
         {activeTab === 'following' && <UserFollowings id={id} />}
         {activeTab === 'followers' && <UserFollowers id={id} />}

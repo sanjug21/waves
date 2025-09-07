@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/store/hooks";
 import Loader from "@/components/Util/Loader";
 import UserConversations from "@/components/UserConversations";
+import Suggestion from "@/components/Suggestion";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -31,12 +32,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       <div className="flex-1 overflow-y-auto scrollbar-hidden-style ">
         <div className="flex  min-h-full">
-          <div className="hidden lg:block sm:w-1/2 md:w-1/3 p-5">
-            Suggestions
+          <div className="sticky left-0 top-0 max-h-[calc(100vh-75px)] overflow-y-auto hidden lg:block sm:w-1/2 md:w-1/3 p-5">
+            <Suggestion />
           </div>
 
           <main className="w-full sm:w-[60%] lg:w-[45%]  ">
-            <div className="max-w-[1000px] mx-auto">{children}</div>
+            <div className="max-w-[1000px] mx-auto ">{children}</div>
           </main>
 
           <div className="sticky right-0 top-0 max-h-[calc(100vh-75px)] overflow-y-auto hidden sm:block sm:w-2/5 lg:w-1/3 p-2 ">
