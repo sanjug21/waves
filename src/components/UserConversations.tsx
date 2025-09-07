@@ -20,7 +20,6 @@ export default function UserConversations() {
 
   useEffect(() => {
     if (!currentUser?._id) return;
-
     const socket = getSocket();
     socket.emit("join", currentUser._id);
 
