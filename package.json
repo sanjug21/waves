@@ -3,25 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  
-   "scripts": {
-    "dev": "concurrently -n \"Next,Socket\" -c \"cyan,magenta\" --kill-others-on-fail \"next dev --turbopack\" \"tsx watch src/socket/socket.ts\"",
-    "dev:next": "next dev --turbopack",
-    "dev:socket": "tsx watch src/socket/socket.ts",
-
-    "build": "npm run build:next && npm run build:socket",
-    "build:next": "next build",
-    "build:socket": "tsc --project tsconfig.socket.json",
-
-    "start": "concurrently -n \"Next,Socket\" --kill-others-on-fail \"npm run start:next\" \"npm run start:socket\"",
-    "start:next": "next start",
-    "start:socket": "node dist/socket.js",
-
-    "lint": "next lint",
-
-    "preview": "npm run build && npm run start"
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
-
   "dependencies": {
     "@reduxjs/toolkit": "^2.8.2",
     "axios": "^1.11.0",
@@ -57,6 +44,7 @@
     "nodemon": "^3.1.10",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "tsx": "^4.20.5",
     "typescript": "^5"
   }

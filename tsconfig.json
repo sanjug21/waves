@@ -22,9 +22,9 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "outDir": "./dist/socket"
+    "outDir": "./dist/"
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/home/profile/[id]"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/home/profile/[id]", "src/Socket/**/*.ts", "src/socket.ts"],
   "exclude": ["node_modules"]
 }
 

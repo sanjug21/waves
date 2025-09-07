@@ -5,7 +5,7 @@ let socket: Socket | undefined;
 
 export const getSocket = (): Socket => {
     if (!socket) {
-        socket = io(process.env.BACKEND_URL || "http://localhost:3001",{
+        socket = io(process.env.BACKEND_URL || "http://localhost:4521",{
             autoConnect: true,
             reconnection: true,
             reconnectionAttempts: 5,
