@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import Loader from '@/components/Util/Loader';
 import API from '@/utils/api';
-import { Post } from '@/types/types';
+import { Post } from '@/types/PostDetails.type';
 import PostCard from '@/components/Cards/PostCard';
 
 export default function Home() {
@@ -21,6 +21,7 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
+    
   }, []);
 
   useEffect(() => {
@@ -33,13 +34,16 @@ export default function Home() {
     return <Loader />;
   }
 
-  if (error) {
+  if (error)
     return (
-      <div className="w-full text-center text-red-500 mt-20">
-        <p>Error: {error}</p>
-      </div>
+      <button
+        onClick={fetchPosts}
+        className="rounded bg-orange-400 text-white"
+      >
+        refresh
+      </button>
     );
-  }
+
 
   return (
     <div className="w-full h-full ">

@@ -1,5 +1,6 @@
 import API from "@/utils/api";
-import { Post, UserDetails } from "../types/types";
+import { Post} from "../types/PostDetails.type";
+import { UserDetails } from "../types/UserDetails.tpye";
 
 export async function getUser(userId: string) {
     try {

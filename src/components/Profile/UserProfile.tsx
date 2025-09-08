@@ -2,12 +2,13 @@
 
 import { getUser, checkIsFollowing, followUnfollowUser } from "@/hooks/profileHooks";
 import { useAppSelector } from "@/store/hooks";
-import { IdProp, UserDetails } from "@/types/types";
+import {  UserDetails } from "@/types/UserDetails.tpye";
 import { useEffect, useState } from "react";
 import ProfileSkelton from "../skeleton/ProfileSkeleton";
 import Link from "next/link";
 import { Settings } from "lucide-react";
 import ImagePreview from "@/components/Util/ImagePreview";
+import { IdProp } from "@/types/Props.types";
 
 export default function UserProfile({ id }: IdProp) {
   const [profileUser, setProfileUser] = useState<UserDetails | null>(null);

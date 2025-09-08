@@ -2,31 +2,31 @@
 
 import { useEffect, useState } from "react";
 import { getFollowers } from "@/hooks/profileHooks";
-import { IdProp, UserDetails } from "@/types/types";
 import Loader from "../Util/Loader";
 import UserCard from "../Cards/UserCard";
 import UserCardSkeleton from "../skeleton/UserCardSkeleton";
+import { IdProp } from "@/types/Props.types";
+import { UserDetails } from "@/types/UserDetails.tpye";
 
 export default function UserFollowers({ id }: IdProp) {
   const [followers, setFollowers] = useState<UserDetails[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const fetchFollowers = async () => {
+    if (!id) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await getFollowers(id);
+      setFollowers(data);
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to fetch followers.");
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchFollowers = async () => {
-      if (!id) return;
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await getFollowers(id);
-        setFollowers(data);
-      } catch (err: any) {
-        setError(err.response?.data?.message || "Failed to fetch followers.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchFollowers();
   }, [id]);
 
@@ -39,10 +39,10 @@ export default function UserFollowers({ id }: IdProp) {
     </div>
     )
 }
-  if (error) return <p className="text-red-500 text-center mt-4">{error}</p>;
+  if (error) return <button onClick={fetchFollowers} className="rounded bg-orange-400 text-white">refresh</button>;
 
   return (
-    <div className="max-w-3xl mx-auto mt-2">
+    <div className="max-w-3xl mx-auto ">
       {followers.length === 0 ? (
         <p className="text-gray-500 text-center">No followers yet.</p>
       ) : (

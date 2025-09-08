@@ -2,30 +2,32 @@
 
 import { useEffect, useState } from "react";
 import { getFollowing } from "@/hooks/profileHooks";
-import { IdProp, UserDetails } from "@/types/types";
 import Loader from "../Util/Loader";
 import UserCard from "../Cards/UserCard";
 import UserCardSkeleton from "../skeleton/UserCardSkeleton";
+import { IdProp } from "@/types/Props.types";
+import { UserDetails } from "@/types/UserDetails.tpye";
 
 export default function UserFollowings({ id }: IdProp) {
   const [followings, setFollowings] = useState<UserDetails[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const fetchFollowings = async () => {
+    if (!id) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await getFollowing(id);
+      setFollowings(data);
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to fetch followings.");
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchFollowings = async () => {
-      if (!id) return;
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await getFollowing(id);
-        setFollowings(data);
-      } catch (err: any) {
-        setError(err.response?.data?.message || "Failed to fetch followings.");
-      } finally {
-        setLoading(false);
-      }
-    };
+    
 
     fetchFollowings();
   }, [id]);
@@ -39,10 +41,18 @@ export default function UserFollowings({ id }: IdProp) {
       </div>
       )
   }
-  if (error) return <p className="text-red-500 text-center mt-4">{error}</p>;
+  if (error)
+    return (
+      <button
+        onClick={fetchFollowings}
+        className="rounded bg-orange-400 text-white"
+      >
+        refresh
+      </button>
+    );
 
   return (
-    <div className="max-w-3xl mx-auto mt-2">
+    <div className="max-w-3xl mx-auto ">
       {followings.length === 0 ? (
         <p className="text-gray-500 text-center">Not following anyone yet.</p>
       ) : (

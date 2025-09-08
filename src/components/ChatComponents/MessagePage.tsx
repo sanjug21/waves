@@ -2,10 +2,11 @@
 
 import { getInitialChats } from "@/hooks/chatHooks";
 import { useAppSelector } from "@/store/hooks";
-import { ChatMessage, IdProp } from "@/types/types";
 import { useEffect, useRef, useState } from "react";
 import MessageCard from "../Cards/MessageCard";
 import { getSocket } from "@/lib/socket";
+import { IdProp } from "@/types/Props.types";
+import { ChatMessage } from "@/types/Conversation.type";
 
 export default function MessagePage({ id }: IdProp) {
   const currentUserId = useAppSelector((state) => state.auth.user?._id);

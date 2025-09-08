@@ -1,6 +1,7 @@
 import { getSocket } from "@/lib/socket";
 import { useAppSelector } from "@/store/hooks";
-import { IdProp, SendMessagePayload } from "@/types/types";
+import { SendMessagePayload } from "@/types/Conversation.type";
+import { IdProp } from "@/types/Props.types";
 import { set } from "mongoose";
 import { useEffect, useRef, useState } from "react";
 import { IoMdSend } from "react-icons/io";

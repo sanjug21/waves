@@ -1,6 +1,6 @@
 "use client";
 
-import { ConversationDetails } from "@/types/types";
+import { ConversationDetails } from "@/types/Conversation.type";
 import Link from "next/link";
 
 export default function ConversationCard({
