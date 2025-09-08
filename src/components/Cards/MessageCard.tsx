@@ -1,6 +1,6 @@
 "use client";
 
-import { ChatMessage } from "@/types/types";
+import { ChatMessage } from "@/types/Conversation.type";
 import { useAppSelector } from "@/store/hooks";
 
 export default function MessageCard({ message }: { message: ChatMessage }) {

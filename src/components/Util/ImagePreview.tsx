@@ -1,13 +1,9 @@
 'use client';
 
+import { ImagePreviewProps } from '@/types/Props.types';
 import {  X } from 'lucide-react';
 
-interface ImagePreviewProps {
-  src: string;
-  alt?: string;
-  onClose: () => void;
-  username?: string;
-}
+
 
 export default function ImagePreview({ src, alt = 'Preview', onClose, username }: ImagePreviewProps) {
    const handleBackgroundClick = (e: React.MouseEvent<HTMLDivElement>) => {

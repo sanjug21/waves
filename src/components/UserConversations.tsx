@@ -5,8 +5,8 @@ import Link from "next/link";
 import { getUserConversations, searchChatUser } from "@/hooks/chatHooks";
 import { getSocket } from "@/lib/socket";
 import { useAppSelector } from "@/store/hooks";
-import { ConversationDetails, UserDetails } from "@/types/types";
-import { Spinner } from "./Util/Loader";
+import { ConversationDetails} from "@/types/Conversation.type";
+import { UserDetails } from "@/types/UserDetails.tpye";
 import ConversationCard from "./Cards/ConversationCard";
 import ConversationCardSkeleton from "./skeleton/ConversationCardSkelton";
 

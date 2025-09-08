@@ -3,7 +3,7 @@
 import ChatTextField from "@/components/ChatComponents/chatTextField";
 import MessagePage from "@/components/ChatComponents/MessagePage";
 import { getUser } from "@/hooks/profileHooks";
-import { UserDetails } from "@/types/types";
+import { UserDetails } from "@/types/UserDetails.tpye";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 

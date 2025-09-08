@@ -2,10 +2,11 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { Heart, MessageCircle } from "lucide-react";
-import { Post } from "@/types/types";
+import { Post } from "@/types/PostDetails.type";
 import ImagePreview from "@/components/Util/ImagePreview";
 import { toggleLike } from "@/hooks/postHooks";
 import { useAppSelector } from "@/store/hooks";
+import PostPreview from "../PostPreview";
 
 const PostCard = ({ post }: { post: Post }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -14,6 +15,14 @@ const PostCard = ({ post }: { post: Post }) => {
   const [showDpPreview, setShowDpPreview] = useState(false);
   const [likes, setLikes] = useState(post.likes || []);
   const [showHeartBurst, setShowHeartBurst] = useState(false);
+
+  const [showPostPreview, setShowPostPreview] = useState(false);
+  const [previewTab, setPreviewTab] = useState<"likes" | "comments">(
+    "likes"
+  );
+
+ 
+
 
   const currentUser = useAppSelector((state) => state.auth.user);
   const [isLiked, setIsLiked] = useState(() =>
@@ -96,7 +105,7 @@ const PostCard = ({ post }: { post: Post }) => {
 
   return (
     <>
-      <div className="rounded-xl border border-gray-700 bg-black/30 shadow-lg max-w-[750px] mx-auto font-sans overflow-hidden backdrop-blur-3xl relative">
+      <div className="rounded-xl border border-gray-700 bg-black/30 shadow-lg mx-auto font-sans overflow-hidden backdrop-blur-3xl relative w-full">
         <div className="flex items-center gap-4 px-5 py-4 border-b border-gray-700">
           <img
             src={userProfilePic}
@@ -178,12 +187,17 @@ const PostCard = ({ post }: { post: Post }) => {
                   }`}
                 />
               </button>
-              <span className="text-sm text-gray-200">
-                {likes.length} Likes
-              </span>
+              <button onClick={() =>setShowPostPreview(true)}>
+                <span className="text-sm text-gray-200">
+                  {likes.length} Likes
+                </span>
+              </button>
             </div>
 
-            <button className="flex items-center gap-1.5 text-gray-300 hover:opacity-80 transition-opacity">
+            <button
+              onClick={() =>setShowImagePreview(true)}
+              className="flex items-center gap-1.5 text-gray-300 hover:opacity-80 transition-opacity"
+            >
               <MessageCircle size={18} className="transform scale-x[-1]" />
               <span className="text-sm text-gray-200">
                 {post.comments?.length || 0} Comments
@@ -193,6 +207,14 @@ const PostCard = ({ post }: { post: Post }) => {
         </div>
         {showHeartBurst && <div className="heartBurst" />}
       </div>
+
+      {showPostPreview && (
+        <PostPreview
+          post={post}
+          onClose={() => setShowPostPreview(false)}
+          initialTab={previewTab}
+        />
+      )}
 
       {showImagePreview && post.imageUrl && (
         <ImagePreview
@@ -210,6 +232,7 @@ const PostCard = ({ post }: { post: Post }) => {
           username={post.userId.name}
         />
       )}
+       
     </>
   );
 };

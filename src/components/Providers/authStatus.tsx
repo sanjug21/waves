@@ -2,8 +2,7 @@
 import React, { useEffect } from 'react';
 import { useAppDispatch,useAppSelector } from '@/store/hooks';
 import { setAuthenticated, setLoggedOut, setLoading } from '@/store/slices/authSlice';
-import { UserDetails } from '@/types/types';
-import Loader from '../Util/Loader';
+import { UserDetails } from '@/types/UserDetails.tpye';
 
 export function AuthStatusLoader({ children }: { children: React.ReactNode }) {
   const dispatch = useAppDispatch();

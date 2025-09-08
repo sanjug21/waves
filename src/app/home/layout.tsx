@@ -22,7 +22,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     }
   }, [loading, isAuthenticated, router]);
 
-  if (loading || !isAuthenticated) return <div className="lendingPage"><Loader /></div>;
+  if (loading || !isAuthenticated) return <div className="HomeBg"><Loader /></div>;
 
   return (
     <div className="h-screen HomeBg flex flex-col  ">

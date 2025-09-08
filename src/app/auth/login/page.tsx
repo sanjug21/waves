@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ZodError } from 'zod';
 import axios from 'axios';
+import { set } from 'mongoose';
 
 export default function Login() {
   const router = useRouter();
@@ -20,6 +21,7 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loadingLocal, setLoadingLocal] = useState(false);
 
   const emailRef = useRef<HTMLInputElement>(null);
  
@@ -35,6 +37,7 @@ export default function Login() {
   //   return <Loader/>;
 
   // }
+ 
 
  
   const togglePasswordVisibility = () => {
@@ -45,6 +48,7 @@ export default function Login() {
     e.preventDefault();
     dispatch(clearError());
      dispatch(setLoading(true));
+     setLoadingLocal(true);
 
     try {
       LoginSchema.parse({ email, password });
@@ -74,6 +78,7 @@ export default function Login() {
       }
     } finally {
       dispatch(setLoading(false));
+      setLoadingLocal(false);
     }
   };
 
@@ -143,7 +148,7 @@ export default function Login() {
                 }`}
             >
               <span className="relative z-10">
-                {loading ? 'Logging in...' : 'Log In'}
+                {loadingLocal ? 'Logging in...' : 'Log In'}
               </span>
               <span className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></span>
             </button>

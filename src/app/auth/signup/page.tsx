@@ -11,7 +11,6 @@ import { z, ZodError } from 'zod';
 import { SignupSchema, passwordSchema } from '@/lib/schema/user.schema';
 import API from '@/utils/api';
 import axios from 'axios';
-import { set } from 'mongoose';
 
 type FormErrors = {
   name?: string;
