@@ -20,7 +20,9 @@ export default function PostPreview({
   const displayedDescription =
     showFullDescription || !isLongDescription
       ? post.description
-      : post.description.slice(0, maxLength) + "...";
+      : post.description
+      ? post.description.slice(0, maxLength) + "..."
+      : "";
 
   return (
     <div className="fixed inset-0 z-50 w-screen h-screen bg-black/90 flex flex-col">
