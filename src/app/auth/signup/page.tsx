@@ -78,6 +78,7 @@ export default function SignUp() {
     }
   };
 
+  
   const verifyOtp = async (otp: string) => {
     setErrors({});
     setIsVerifyingOtp(true);
