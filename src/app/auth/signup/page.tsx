@@ -188,7 +188,7 @@ export default function SignUp() {
               placeholder="Enter email to continue..."
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              disabled={isLoading}
+              disabled={isSendingOtp}
             />
             {errors.email && (
               <p className="text-red-400 text-sm mt-1 text-left">
@@ -197,10 +197,10 @@ export default function SignUp() {
             )}
             <button
               onClick={sendOtp}
-              disabled={isLoading || !email}
+              disabled={isSendingOtp || !email}
               className="btn mt-6 w-1/2 rounded-2xl bg-gradient-to-br from-orange-600 to-purple-700 text-white font-semibold py-2 px-4 transition duration-300 ease-in-out hover:opacity-90 disabled:opacity-50"
             >
-              {isLoading ? "Sending OTP..." : "Send OTP"}
+              {isSendingOtp ? "Sending OTP..." : "Send OTP"}
             </button>
           </>
         )}
@@ -343,7 +343,7 @@ export default function SignUp() {
                 type="button"
                 tabIndex={-1}
                 onClick={toggleConfirmPasswordVisibility}
-                className="absolute top-1/2 right-3 transform -translate-y-1/2 text-black focus:outline-none"
+                className="absolute top-2/3 right-3 transform -translate-y-1/2 text-black focus:outline-none"
                 aria-label={
                   showConfirmPassword
                     ? "Hide confirm password"
