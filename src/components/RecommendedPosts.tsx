@@ -61,6 +61,7 @@ export default function RecommendedPosts() {
   }
 
   if (error) {
+    return null;
     return (
       <div className="p-8 text-center bg-red-500/10 border border-red-500/20 rounded-2xl mx-auto max-w-xl">
         <p className="text-red-400 mb-4">{error}</p>
