@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { NavBar } from "@/components/NavBar";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/store/hooks";
@@ -11,9 +11,15 @@ import Suggestion from "@/components/Suggestion";
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { isAuthenticated, loading } = useAppSelector((state) => state.auth);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "auto" });
+    // Start mobile users at the "Feed" (the middle section)
+    if (window.innerWidth < 768 && scrollContainerRef.current) {
+      // We calculate the width of one section to center the feed
+      const width = window.innerWidth;
+      scrollContainerRef.current.scrollTo({ left: 0, behavior: "auto" });
+    }
   }, []);
 
   useEffect(() => {
@@ -22,27 +28,56 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     }
   }, [loading, isAuthenticated, router]);
 
-  if (loading || !isAuthenticated) return <div className="HomeBg"><Loader /></div>;
+  if (loading || !isAuthenticated)
+    return (
+      <div className="HomeBg">
+        <Loader />
+      </div>
+    );
 
   return (
-    <div className="h-screen HomeBg flex flex-col  ">
-      <div className="sticky top-0 z-50 bg-white shadow-md h-[75px]">
+    <div className="h-screen HomeBg flex flex-col overflow-hidden">
+      {/* NAVBAR */}
+      <div className="sticky top-0 z-50 h-[75px] shrink-0">
         <NavBar />
       </div>
 
-      <div className="flex-1 overflow-y-auto scrollbar-hidden-style ">
-        <div className="flex  min-h-full">
-          <div className="sticky left-0 top-0 max-h-[calc(100vh-75px)] overflow-y-auto hidden lg:block sm:w-1/2 md:w-1/3 p-5">
+      {/* HORIZONTAL SLIDE CONTAINER 
+          - snap-x snap-mandatory: Enables the "Slide to change" behavior
+          - overflow-x-auto: Allows swiping on mobile
+          - md:overflow-x-visible: Disables swiping on desktop to keep 3-column layout
+      */}
+      <div
+        ref={scrollContainerRef}
+        className="flex-1 flex overflow-x-auto md:overflow-x-visible snap-x snap-mandatory scrollbar-hide"
+      >
+        <div className="flex w-full min-h-full">
+          {/* 1. SUGGESTIONS (Left Slide) 
+              - snap-center: Snaps here when swiped left
+          */}
+          <aside className="w-full shrink-0 snap-center md:snap-align-none md:w-[30%] lg:w-[25%] p-5 h-[calc(100vh-75px)] overflow-y-auto scrollbar-hide border-r border-white/5">
+            <div className="md:hidden mb-4 opacity-40 text-[10px] font-black uppercase tracking-[0.3em] text-center">
+              Swipe right for Feed →
+            </div>
             <Suggestion />
-          </div>
+          </aside>
 
-          <main className="w-full sm:w-[60%] lg:w-[45%]  ">
-            <div className="max-w-[1000px] mx-auto ">{children}</div>
+          {/* 2. MAIN FEED (Middle Slide) */}
+          <main className="w-full shrink-0 snap-center md:snap-align-none md:w-[40%] lg:w-[50%] h-[calc(100vh-75px)] overflow-y-auto scrollbar-hide">
+            <div className="md:hidden flex justify-between px-6 py-2 opacity-30 text-[9px] font-black uppercase tracking-widest">
+              <span>← Suggestions</span>
+              <span>Chats →</span>
+            </div>
+            <div className="max-w-[700px] mx-auto">{children}</div>
           </main>
 
-          <div className="sticky right-0 top-0 max-h-[calc(100vh-75px)] overflow-y-auto hidden sm:block sm:w-2/5 lg:w-1/3 p-2 ">
+          {/* 3. CONVERSATIONS (Right Slide) */}
+          <aside className="w-full shrink-0 snap-center md:snap-align-none md:w-[30%] lg:w-[25%] p-2 h-[calc(100vh-75px)] overflow-y-auto scrollbar-hide border-l border-white/5">
+            <div className="md:hidden mb-4 opacity-40 text-[10px] font-black uppercase tracking-[0.3em] text-center">
+              ← Swipe left for Feed
+            </div>
             <UserConversations />
-          </div>
+          </aside>
         </div>
       </div>
     </div>

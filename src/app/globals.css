@@ -213,12 +213,12 @@
   }
 
   30% {
-    transform: translate(-50%, -50%) scale(1.2);
+    transform: translate(-50%, -50%) scale(2);
     opacity: 1;
   }
 
   50% {
-    transform: translate(-50%, -50%) scale(1);
+    transform: translate(-50%, -50%) scale(1.5);
     opacity: 1;
   }
 
@@ -272,3 +272,12 @@ rgb(0, 6, 34)
 rgb(0,12,60)
 rgb(255, 127, 80)
 */
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

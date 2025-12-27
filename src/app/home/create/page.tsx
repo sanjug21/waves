@@ -2,7 +2,6 @@
 import { useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { useAppSelector } from "@/store/hooks";
 import axios from "axios";
 import API from "@/utils/api";

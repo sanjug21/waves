@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from "react";
 import { getFollowing } from "@/hooks/profileHooks";
-import Loader from "../Util/Loader";
 import UserCard from "../Cards/UserCard";
 import UserCardSkeleton from "../skeleton/UserCardSkeleton";
 import { IdProp } from "@/types/Props.types";
-import { UserDetails } from "@/types/UserDetails.tpye";
+import { UserDetails } from "@/types/UserDetails.type";
+import { RefreshCcw } from "lucide-react";
 
 export default function UserFollowings({ id }: IdProp) {
   const [followings, setFollowings] = useState<UserDetails[]>([]);
@@ -26,42 +26,50 @@ export default function UserFollowings({ id }: IdProp) {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    
 
+  useEffect(() => {
     fetchFollowings();
   }, [id]);
 
-   if (loading){
-      return(
-          <div className="space-y-2">
-          {Array.from({ length: 7 }).map((_, i) => (
-          <UserCardSkeleton key={i} />
-        ))}
-      </div>
-      )
-  }
-  if (error)
-    return (
-      <button
-        onClick={fetchFollowings}
-        className="rounded bg-orange-400 text-white"
-      >
-        refresh
-      </button>
-    );
-
   return (
-    <div className="max-w-3xl mx-auto ">
-      {followings.length === 0 ? (
-        <p className="text-gray-500 text-center">Not following anyone yet.</p>
-      ) : (
-        <div className="space-y-2">
-          {followings.map((user) => (
-            <UserCard key={user._id} user={user} />
-          ))}
-        </div>
-      )}
+    <div className="max-w-3xl mx-auto pb-10">
+      {/* MINIMALIST GLASS CONTAINER 
+          Using bg-white/[0.04] to create a clear pane that highlights 
+          the darker UserCards (bg-black/40) inside.
+      */}
+      <div className="bg-white/[0.04] backdrop-blur-2xl border border-white/10 p-6 min-h-[300px] shadow-2xl rounded-none">
+        {loading ? (
+          <div className="space-y-3 animate-in fade-in duration-500">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <UserCardSkeleton key={i} />
+            ))}
+          </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center py-20 space-y-4">
+            <p className="text-red-400 font-medium text-sm bg-red-500/10 px-4 py-2 border border-red-500/20">
+              {error}
+            </p>
+            <button
+              onClick={fetchFollowings}
+              className="flex items-center gap-2 px-6 py-2.5 bg-white/10 border border-white/20 text-white text-xs font-black uppercase tracking-widest hover:bg-white/20 transition-all active:scale-95"
+            >
+              <RefreshCcw size={14} /> Try Again
+            </button>
+          </div>
+        ) : followings.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-24 opacity-30">
+            <p className="text-white text-xs font-black uppercase tracking-[0.3em]">
+              Not following anyone yet
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            {followings.map((user) => (
+              <UserCard key={user._id} user={user} />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
