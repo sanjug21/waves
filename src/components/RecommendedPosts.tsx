@@ -32,7 +32,7 @@ export default function RecommendedPosts() {
 
   const fetchPostById = async (id: string) => {
     try {
-      const res = await API.get(`/posts/getpostbyid/${id}`);
+      const res = await API.post("/posts/getpostbyid", { id });
       setSelectedPost(res.data.post);
     } catch (err: any) {
       console.error("Failed to fetch post:", err);

@@ -3,10 +3,16 @@ import { dbConnect } from "@/lib/DataBase/dbConnect";
 import PostModel from "@/lib/models/Post.model";
 import Like from "@/lib/models/Like.model";
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(req: NextRequest) {
     try {
         await dbConnect();
-        const { id } = params;
+
+        // Extract id from the request body
+        const { id } = await req.json();
+
+        if (!id) {
+            return NextResponse.json({ error: "Post ID is required in body" }, { status: 400 });
+        }
 
         const post = await PostModel.findById(id)
             .populate("userId", "name dp")
@@ -19,12 +25,11 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
         // Attach likes
         const likes = await Like.find({ PostId: id }).populate("UserId", "name dp").lean();
         const likesList = likes.map((like: any) => ({
-            _id: String(like.UserId._id),
-            name: like.UserId.name,
-            dp: like.UserId.dp || "",
+            _id: String(like.UserId?._id || ""),
+            name: like.UserId?.name || "Unknown",
+            dp: like.UserId?.dp || "",
         }));
 
-        // Comments not implemented yet, return empty array
         const postWithExtras = {
             ...post,
             likes: likesList,
