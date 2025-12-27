@@ -13,6 +13,7 @@ export default function MessagePage({ id }: IdProp) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // Initial Fetch
   useEffect(() => {
     const fetchMessages = async () => {
       try {
@@ -26,10 +27,10 @@ export default function MessagePage({ id }: IdProp) {
         console.error("Error fetching messages:", error);
       }
     };
-
     fetchMessages();
   }, [id]);
 
+  // Socket Logic
   useEffect(() => {
     const socket = getSocket();
     socket.emit("join", currentUserId);
@@ -40,35 +41,68 @@ export default function MessagePage({ id }: IdProp) {
         (incoming.senderId === id && incoming.receiverId === currentUserId);
 
       if (isRelevant) {
-        const updated = [...messages, incoming].sort(
-          (a, b) =>
-            new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime()
-        );
-        setMessages(updated);
+        // Use functional state update to ensure we have the latest messages array
+        setMessages((prev) => {
+          const exists = prev.some((m) => m._id === incoming._id);
+          if (exists) return prev;
+
+          return [...prev, incoming].sort(
+            (a, b) =>
+              new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime()
+          );
+        });
       }
     };
 
     socket.on("messages", handleNewMessage);
-
     return () => {
       socket.off("messages", handleNewMessage);
     };
-  }, [id, currentUserId, messages]);
+  }, [id, currentUserId]); // Removed 'messages' from dependency to prevent recursive listeners
 
+  // Smooth Scroll to Bottom
   useEffect(() => {
     if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      scrollRef.current.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: "smooth",
+      });
     }
   }, [messages]);
 
   return (
-    <div
-      ref={scrollRef}
-      className="h-full overflow-y-auto space-y-3 scrollbar-hidden-style"
-    >
-      {messages.map((message) => (
-        <MessageCard key={message._id} message={message} />
-      ))}
+    <div className="relative h-full w-full flex flex-col overflow-hidden">
+      {/* Top Fade Gradient: 
+          Makes messages look like they are disappearing into the header elegantly 
+      */}
+      <div className="absolute top-0 left-0 right-0 h-10 bg-gradient-to-b from-[#000828]/40 to-transparent z-10 pointer-events-none md:from-transparent" />
+
+      <div
+        ref={scrollRef}
+        className="flex-grow overflow-y-auto px-4 py-6 space-y-2 scrollbar-hide"
+        style={{ scrollBehavior: "smooth" }}
+      >
+        {messages.length === 0 ? (
+          <div className="h-full flex flex-col items-center justify-center opacity-30">
+            <div className="w-12 h-12 rounded-full border-2 border-dashed border-white mb-4 animate-spin-slow" />
+            <p className="text-xs uppercase tracking-[0.3em] font-black">
+              Begin Wave
+            </p>
+          </div>
+        ) : (
+          messages.map((message, index) => (
+            <div
+              key={message._id || index}
+              className="animate-in fade-in slide-in-from-bottom-2 duration-300"
+            >
+              <MessageCard message={message} />
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Bottom Fade Gradient: Smoothens transition to the Input Bar */}
+      <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-[#000828]/40 to-transparent z-10 pointer-events-none" />
     </div>
   );
 }

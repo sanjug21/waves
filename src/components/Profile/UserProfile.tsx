@@ -2,7 +2,7 @@
 
 import { getUser, checkIsFollowing, followUnfollowUser } from "@/hooks/profileHooks";
 import { useAppSelector } from "@/store/hooks";
-import {  UserDetails } from "@/types/UserDetails.tpye";
+import {  UserDetails } from "@/types/UserDetails.type";
 import { useEffect, useState } from "react";
 import ProfileSkelton from "../skeleton/ProfileSkeleton";
 import Link from "next/link";

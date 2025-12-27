@@ -1,4 +1,4 @@
-import { UserDetails } from "./UserDetails.tpye";
+import { UserDetails } from "./UserDetails.type";
 
 export interface ChatMessage {
     _id: string;

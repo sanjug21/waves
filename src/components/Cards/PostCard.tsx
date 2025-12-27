@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Heart, MessageCircle } from "lucide-react";
+import { createPortal } from "react-dom"; // Import createPortal
+import { Heart, MessageCircle, MoreHorizontal, Share2 } from "lucide-react";
 import { Post } from "@/types/PostDetails.type";
 import ImagePreview from "@/components/Util/ImagePreview";
 import { toggleLike } from "@/hooks/postHooks";
@@ -15,14 +16,11 @@ const PostCard = ({ post }: { post: Post }) => {
   const [showDpPreview, setShowDpPreview] = useState(false);
   const [likes, setLikes] = useState(post.likes || []);
   const [showHeartBurst, setShowHeartBurst] = useState(false);
-
   const [showPostPreview, setShowPostPreview] = useState(false);
-  const [previewTab, setPreviewTab] = useState<"likes" | "comments">(
-    "likes"
-  );
+  const [previewTab, setPreviewTab] = useState<"likes" | "comments">("likes");
 
- 
-
+  // Mounted state to ensure Portals only render on the client
+  const [mounted, setMounted] = useState(false);
 
   const currentUser = useAppSelector((state) => state.auth.user);
   const [isLiked, setIsLiked] = useState(() =>
@@ -30,9 +28,11 @@ const PostCard = ({ post }: { post: Post }) => {
   );
 
   const descriptionRef = useRef<HTMLParagraphElement>(null);
+  const clickTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const defaultDp = "/def.png";
 
   useEffect(() => {
+    setMounted(true); // Component has mounted on the client
     const checkOverflow = () => {
       if (descriptionRef.current) {
         const hasOverflow =
@@ -41,63 +41,61 @@ const PostCard = ({ post }: { post: Post }) => {
         setIsOverflowing(hasOverflow);
       }
     };
-
     checkOverflow();
-    window.addEventListener("resize", checkOverflow);
-    return () => window.removeEventListener("resize", checkOverflow);
   }, [post.description]);
-
-  const toggleExpanded = () => setIsExpanded(!isExpanded);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
+    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   };
 
   const toggleLikes = async () => {
     if (!currentUser) return;
-
     const previousLikes = likes;
     const previousIsLiked = isLiked;
-
-    const optimisticLike = {
-      _id: currentUser._id,
-      name: currentUser.name,
-      dp: currentUser.dp || defaultDp,
-    };
 
     if (previousIsLiked) {
       setLikes(previousLikes.filter((user) => user._id !== currentUser._id));
       setIsLiked(false);
     } else {
-      setLikes([...previousLikes, optimisticLike]);
+      setLikes([
+        ...previousLikes,
+        {
+          _id: currentUser._id,
+          name: currentUser.name,
+          dp: currentUser.dp || defaultDp,
+        },
+      ]);
       setIsLiked(true);
-      setShowHeartBurst(true);
-      setTimeout(() => setShowHeartBurst(false), 1200);
+      triggerHeartBurst();
     }
-
     try {
-      const response = await toggleLike(post._id);
-      if (!response.success) {
-        throw new Error("API call failed");
-      }
+      await toggleLike(post._id);
     } catch (error) {
-      console.error("Failed to toggle like. Reverting changes.");
       setLikes(previousLikes);
       setIsLiked(previousIsLiked);
     }
   };
 
-  const handleDoubleClickLike = () => {
-    if (isLiked) {
-      setShowHeartBurst(true);
-      setTimeout(() => setShowHeartBurst(false), 1200);
+  const triggerHeartBurst = () => {
+    setShowHeartBurst(true);
+    setTimeout(() => setShowHeartBurst(false), 1000);
+  };
+
+  const handleImageClick = () => {
+    if (clickTimeoutRef.current) {
+      clearTimeout(clickTimeoutRef.current);
+      clickTimeoutRef.current = null;
+      if (!isLiked) {
+        toggleLikes();
+      } else {
+        triggerHeartBurst();
+      }
     } else {
-      toggleLikes();
+      clickTimeoutRef.current = setTimeout(() => {
+        setShowImagePreview(true);
+        clickTimeoutRef.current = null;
+      }, 300);
     }
   };
 
@@ -105,134 +103,160 @@ const PostCard = ({ post }: { post: Post }) => {
 
   return (
     <>
-      <div className="rounded-xl border border-gray-700 bg-black/30 shadow-lg mx-auto font-sans overflow-hidden backdrop-blur-3xl relative w-full">
-        <div className="flex items-center gap-4 px-5 py-4 border-b border-gray-700">
-          <img
-            src={userProfilePic}
-            alt={`${post.userId.name}'s profile`}
-            className="h-10 w-10 rounded-full object-cover border border-gray-500 cursor-pointer"
-            onError={(e) => {
-              e.currentTarget.src = defaultDp;
-            }}
-            onClick={() => setShowDpPreview(true)}
-          />
-          <div className="flex flex-col flex-grow">
-            <h3 className="text-sm font-semibold text-white">
-              {post.userId.name}
-            </h3>
-            <time className="text-xs text-gray-400">
-              {formatDate(post.createdAt)}
-            </time>
+      <div className="group relative w-full bg-white/[0.08] backdrop-blur-3xl border border-white/20 rounded-[2.5rem] overflow-hidden transition-all duration-300 shadow-2xl mb-6">
+        {/* HEADER */}
+        <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 bg-black/20 mb-2">
+          <div className="flex items-center gap-3">
+            <img
+              src={userProfilePic}
+              alt={post.userId.name}
+              className="h-11 w-11 rounded-full object-cover border-2 border-white/30 cursor-pointer hover:border-blue-400 transition-all shadow-lg"
+              onClick={() => setShowDpPreview(true)}
+            />
+            <div className="flex flex-col">
+              <h3 className="text-base font-bold text-white tracking-wide">
+                {post.userId.name}
+              </h3>
+              <p className="text-[10px] text-gray-300 font-bold tracking-tight -mt-0.5 opacity-90">
+                {formatDate(post.createdAt)}
+              </p>
+            </div>
           </div>
+          <button className="text-gray-300 hover:text-white transition-colors">
+            <MoreHorizontal size={22} />
+          </button>
         </div>
 
-        <div>
-          {post.description && (
-            <div className="p-4">
-              <p
-                ref={descriptionRef}
-                className={`text-sm text-white whitespace-pre-wrap break-words transition-all ${
-                  isExpanded ? "max-h-none" : "max-h-24 line-clamp-4"
-                }`}
-              >
-                {post.description}
-              </p>
-              {isOverflowing && !isExpanded && (
-                <button
-                  onClick={toggleExpanded}
-                  className="text-indigo-400 hover:underline text-xs mt-1"
-                >
-                  Show more
-                </button>
-              )}
-              {isExpanded && (
-                <button
-                  onClick={toggleExpanded}
-                  className="text-indigo-400 hover:underline text-xs mt-1"
-                >
-                  Show less
-                </button>
-              )}
-            </div>
-          )}
-
-          {post.imageUrl && (
-            <div
-              className="max-h-[500px] bg-black/20 overflow-hidden cursor-pointer"
-              onClick={() => setShowImagePreview(true)}
-              onDoubleClick={handleDoubleClickLike}
+        {/* DESCRIPTION */}
+        {post.description && (
+          <div className="px-7 pb-5">
+            <p
+              ref={descriptionRef}
+              className={`text-[16px] leading-relaxed text-slate-100 font-medium whitespace-pre-wrap break-words transition-all ${
+                isExpanded ? "max-h-none" : "max-h-24 line-clamp-3"
+              }`}
             >
+              {post.description}
+            </p>
+            {isOverflowing && (
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="text-blue-300 font-black text-[10px] mt-2 hover:text-white transition-colors uppercase tracking-wider underline decoration-blue-500/50 underline-offset-4"
+              >
+                {isExpanded ? "Show Less" : "Read Full Post"}
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* IMAGE WITH DOUBLE TAP */}
+        {post.imageUrl && (
+          <div
+            className="px-4 pb-4 cursor-pointer group/image relative"
+            onClick={handleImageClick}
+          >
+            <div className="relative overflow-hidden rounded-[2rem] border border-white/20 shadow-inner bg-black/20 select-none">
               <img
                 src={post.imageUrl}
-                alt="Post content"
-                className="h-full w-full object-cover"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = "none";
-                }}
+                alt="Post"
+                className="w-full h-auto max-h-[600px] object-cover transition-transform duration-700 group-hover/image:scale-[1.02] pointer-events-none"
               />
+              {showHeartBurst && (
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+                  <div className="heartBurst shadow-[0_0_30px_rgba(255,0,255,0.4)]" />
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        <div className="flex border-t border-gray-700 bg-black/20 px-5 py-3">
-          <div className="w-full flex justify-around">
-            <div className="flex items-center gap-1.5 text-gray-300 relative">
-              <button onClick={toggleLikes}>
+        {/* FOOTER ACTIONS */}
+        <div className="px-6 py-4 flex items-center justify-between border-t border-white/10 bg-black/20">
+          <div className="flex items-center gap-4">
+            {/* LIKE PILL */}
+            <div
+              className={`flex items-center bg-white/5 border border-white/10 rounded-full overflow-hidden transition-all hover:bg-white/10 ${
+                isLiked ? "border-pink-500/30 bg-pink-500/5" : ""
+              }`}
+            >
+              <button
+                onClick={toggleLikes}
+                className="pl-3 pr-2 py-2 group/like transition-all active:scale-125"
+              >
                 <Heart
-                  size={18}
-                  className={`transition-colors ${
+                  size={20}
+                  className={`${
                     isLiked
-                      ? "text-pink-500 fill-pink-500 hover:fill-pink-500 hover:text-pink-500"
-                      : "hover:text-orange-400"
-                  }`}
+                      ? "text-pink-500 fill-pink-500"
+                      : "text-white group-hover/like:text-pink-400"
+                  } transition-colors`}
                 />
               </button>
-              <button onClick={() =>setShowPostPreview(true)}>
-                <span className="text-sm text-gray-200">
-                  {likes.length} Likes
-                </span>
+              <div className="h-4 w-[1px] bg-white/20" />
+              <button
+                onClick={() => {
+                  setPreviewTab("likes");
+                  setShowPostPreview(true);
+                }}
+                className="pl-2 pr-4 py-2 text-sm font-black text-white hover:text-blue-400 transition-colors"
+              >
+                {likes.length}
               </button>
             </div>
 
-            <button
-              onClick={() =>setShowImagePreview(true)}
-              className="flex items-center gap-1.5 text-gray-300 hover:opacity-80 transition-opacity"
-            >
-              <MessageCircle size={18} className="transform scale-x[-1]" />
-              <span className="text-sm text-gray-200">
-                {post.comments?.length || 0} Comments
-              </span>
-            </button>
+            {/* COMMENT PILL */}
+            <div className="flex items-center bg-white/5 border border-white/10 rounded-full overflow-hidden transition-all hover:bg-white/10">
+              <button
+                onClick={() => {
+                  setPreviewTab("comments");
+                  setShowPostPreview(true);
+                }}
+                className="pl-3 pr-2 py-2 group/comment transition-all"
+              >
+                <MessageCircle
+                  size={20}
+                  className="text-white group-hover/comment:text-blue-400 transition-colors"
+                />
+              </button>
+              <div className="h-4 w-[1px] bg-white/20" />
+              <div className="pl-2 pr-4 py-2 text-sm font-black text-white">
+                {post.comments?.length || 0}
+              </div>
+            </div>
           </div>
+
+          <button className="p-2.5 bg-white/5 border border-white/10 rounded-full text-white hover:text-blue-400 hover:bg-white/10 transition-all">
+            <Share2 size={18} />
+          </button>
         </div>
-        {showHeartBurst && <div className="heartBurst" />}
       </div>
 
-      {showPostPreview && (
-        <PostPreview
-          post={post}
-          onClose={() => setShowPostPreview(false)}
-          initialTab={previewTab}
-        />
-      )}
+      {/* PORTALS rendered at the end of the body */}
+      {mounted &&
+        showPostPreview &&
+        createPortal(
+          <PostPreview
+            post={post}
+            onClose={() => setShowPostPreview(false)}
+            initialTab={previewTab}
+          />,
+          document.body
+        )}
 
-      {showImagePreview && post.imageUrl && (
-        <ImagePreview
-          src={post.imageUrl}
-          alt="Post content preview"
-          onClose={() => setShowImagePreview(false)}
-          username={post.userId.name}
-        />
-      )}
-      {showDpPreview && (
-        <ImagePreview
-          src={userProfilePic}
-          alt={`${post.userId.name}'s profile picture`}
-          onClose={() => setShowDpPreview(false)}
-          username={post.userId.name}
-        />
-      )}
-       
+      {mounted &&
+        (showImagePreview || showDpPreview) &&
+        createPortal(
+          <ImagePreview
+            src={showImagePreview ? post.imageUrl! : userProfilePic}
+            alt="Preview"
+            onClose={() => {
+              setShowImagePreview(false);
+              setShowDpPreview(false);
+            }}
+            username={post.userId.name}
+          />,
+          document.body
+        )}
     </>
   );
 };

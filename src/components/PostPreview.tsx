@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import Link from "next/link";
 import { PostPreviewProps } from "@/types/Props.types";
+import { Heart, MessageCircle, X } from "lucide-react"; // Matching your icon set
 
 export default function PostPreview({
   post,
@@ -20,218 +21,138 @@ export default function PostPreview({
   const displayedDescription =
     showFullDescription || !isLongDescription
       ? post.description
-      : post.description
-      ? post.description.slice(0, maxLength) + "..."
-      : "";
+      : post.description?.slice(0, maxLength) + "...";
 
   return (
-    <div className="fixed inset-0 z-50 w-screen h-screen bg-black/90 flex flex-col">
-      {/* Header */}
-      <div className="flex justify-between items-center m-4">
-        <Link
-          href={`/home/profile/${post.userId._id}`}
-          className="flex items-center gap-3"
-        >
-          <img
-            src={post.userId.dp || defaultDp}
-            alt={`${post.userId.name}'s profile`}
-            className="h-10 w-10 rounded-full object-cover border border-gray-500 cursor-pointer"
-            onError={(e) => {
-              e.currentTarget.src = defaultDp;
-            }}
-          />
-          <h3 className="font-semibold text-white text-xl">
-            {post.userId.name}
-          </h3>
-        </Link>
-        <button onClick={onClose}>
-          <AiOutlineClose className="h-5 w-5 text-white hover:text-orange-500" />
-        </button>
-      </div>
+    <div className="fixed inset-0 z-[100] w-full h-full flex items-center justify-center p-0 md:p-10 animate-in fade-in zoom-in-95 duration-300">
+      {/* Backdrop Blur Layer */}
+      <div
+        className="absolute inset-0 bg-black/80 backdrop-blur-md"
+        onClick={onClose}
+      />
 
-      {/* Mobile Layout */}
-      <div className="flex flex-col sm:hidden p-4 space-y-4">
-        {/* Description */}
-        {post.description && (
-          <div>
-            <p className="text-white text-sm whitespace-pre-wrap break-words">
-              {displayedDescription}
-            </p>
-            {isLongDescription && (
-              <button
-                onClick={() => setShowFullDescription(!showFullDescription)}
-                className="text-orange-400 text-xs mt-1"
-              >
-                {showFullDescription ? "Show less" : "Show more"}
-              </button>
+      {/* Main Glass Container */}
+      <div className="relative w-full h-full md:h-[90vh] md:max-w-6xl bg-white/[0.03] backdrop-blur-3xl border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col md:flex-row rounded-none md:rounded-[2.5rem]">
+        {/* CLOSE BUTTON (Floating) */}
+        <button
+          onClick={onClose}
+          className="absolute top-6 right-6 z-50 p-2 rounded-full bg-black/40 border border-white/10 text-white hover:bg-red-500/20 transition-all active:scale-90"
+        >
+          <X size={20} />
+        </button>
+
+        {/* LEFT SIDE: Media & Description */}
+        <div className="flex-[1.5] flex flex-col h-full overflow-hidden bg-black/20">
+          {/* Header (User Info) */}
+          <div className="p-6 border-b border-white/5 flex items-center gap-4">
+            <Link
+              href={`/home/profile/${post.userId._id}`}
+              className="flex items-center gap-4 group"
+            >
+              <img
+                src={post.userId.dp || defaultDp}
+                alt={post.userId.name}
+                className="h-12 w-12 rounded-full object-cover border-2 border-white/10 group-hover:border-blue-400 transition-all"
+              />
+              <span className="font-black text-white text-xl tracking-tight group-hover:text-blue-400 transition-colors">
+                {post.userId.name}
+              </span>
+            </Link>
+          </div>
+
+          {/* Scrollable Content (Image + Text) */}
+          <div className="flex-1 overflow-y-auto p-6 scrollbar-hide">
+            {post.imageUrl && (
+              <div className="relative rounded-[1.5rem] overflow-hidden border border-white/10 shadow-2xl bg-black/40">
+                <img
+                  src={post.imageUrl}
+                  alt="Post content"
+                  className="w-full h-auto max-h-[70vh] object-contain"
+                />
+              </div>
+            )}
+
+            {post.description && (
+              <div className="mt-6 px-2">
+                <p className="text-slate-200 text-base leading-relaxed whitespace-pre-wrap font-medium">
+                  {displayedDescription}
+                </p>
+                {isLongDescription && (
+                  <button
+                    onClick={() => setShowFullDescription(!showFullDescription)}
+                    className="text-blue-400 font-black text-xs uppercase tracking-widest mt-2 hover:underline"
+                  >
+                    {showFullDescription ? "Show less" : "Show more"}
+                  </button>
+                )}
+              </div>
             )}
           </div>
-        )}
+        </div>
 
-        {/* Image */}
-        {post.imageUrl && (
-          <img
-            src={post.imageUrl}
-            alt="Post content"
-            className="w-full h-auto max-h-[60vh] object-contain rounded-md bg-gray-900 shadow-2xl"
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = "none";
-            }}
-          />
-        )}
-
-        {/* Toggle Buttons */}
-        <div className="flex gap-4">
-          {post.likes.length > 0 && (
+        {/* RIGHT SIDE: Interactions Panel */}
+        <div className="flex-1 flex flex-col border-l border-white/10 bg-white/[0.02]">
+          {/* Tab Switcher */}
+          <div className="flex border-b border-white/5">
             <button
               onClick={() => setActiveTab("likes")}
-              className={`text-sm font-semibold ${
+              className={`flex-1 py-5 flex items-center justify-center gap-2 text-xs font-black uppercase tracking-[0.2em] transition-all ${
                 activeTab === "likes"
-                  ? "text-white border-b-2 border-white"
-                  : "text-gray-400"
+                  ? "text-white bg-white/5 border-b-2 border-blue-500"
+                  : "text-gray-500 hover:text-white"
               }`}
             >
+              <Heart
+                size={14}
+                className={activeTab === "likes" ? "fill-current" : ""}
+              />
               {post.likes.length} Likes
             </button>
-          )}
-          {post.comments?.length > 0 && (
             <button
               onClick={() => setActiveTab("comments")}
-              className={`text-sm font-semibold ${
+              className={`flex-1 py-5 flex items-center justify-center gap-2 text-xs font-black uppercase tracking-[0.2em] transition-all ${
                 activeTab === "comments"
-                  ? "text-white border-b-2 border-white"
-                  : "text-gray-400"
+                  ? "text-white bg-white/5 border-b-2 border-blue-500"
+                  : "text-gray-500 hover:text-white"
               }`}
             >
-              {post.comments.length} Comments
+              <MessageCircle size={14} />
+              {post.comments?.length || 0} Comments
             </button>
-          )}
-        </div>
-
-        {/* Likes or Comments */}
-        <div className="overflow-y-auto max-h-[40vh]">
-          {activeTab === "likes" && post.likes.length > 0 ? (
-            <ul className="space-y-3">
-              {post.likes.map((user) => (
-                <li key={user._id} className="flex items-center gap-3">
-                  <img
-                    src={user.dp || defaultDp}
-                    alt={user.name}
-                    className="h-8 w-8 rounded-full object-cover border border-gray-600"
-                  />
-                  <span className="text-white text-sm">{user.name}</span>
-                </li>
-              ))}
-            </ul>
-          ) : activeTab === "likes" ? (
-            <p className="text-gray-400 text-sm">No likes yet.</p>
-          ) : null}
-
-          {activeTab === "comments" && post.comments.length > 0 ? (
-            <ul className="space-y-3">
-              {post.comments.map((comment, idx) => (
-                <li key={idx} className="text-white text-sm">
-                  {/* {comment.text} */}
-                </li>
-              ))}
-            </ul>
-          ) : activeTab === "comments" ? (
-            <p className="text-gray-400 text-sm">No comments yet.</p>
-          ) : null}
-        </div>
-      </div>
-
-      {/* Desktop Layout */}
-      <div className="hidden sm:flex flex-1 overflow-y-auto">
-        {/* Left: Description + Image */}
-        <div className="flex-1 p-4 flex flex-col justify-start">
-          {post.description && (
-            <div className="mb-4">
-              <p className="text-white text-sm whitespace-pre-wrap break-words">
-                {displayedDescription}
-              </p>
-              {isLongDescription && (
-                <button
-                  onClick={() => setShowFullDescription(!showFullDescription)}
-                  className="text-orange-400 text-xs mt-1"
-                >
-                  {showFullDescription ? "Show less" : "Show more"}
-                </button>
-              )}
-            </div>
-          )}
-          {post.imageUrl && (
-            <img
-              src={post.imageUrl}
-              alt="Post content"
-              className="w-full h-auto max-h-[80vh] object-contain rounded-md bg-gray-900 shadow-2xl"
-              onError={(e) => {
-                (e.target as HTMLImageElement).style.display = "none";
-              }}
-            />
-          )}
-        </div>
-
-        {/* Right: Likes / Comments Panel */}
-        <div className="w-[300px] flex flex-col border-l border-gray-700 p-4">
-          {/* Toggle Buttons */}
-          <div className="flex gap-4 mb-2">
-            {post.likes.length > 0 && (
-              <button
-                onClick={() => setActiveTab("likes")}
-                className={`text-sm font-semibold ${
-                  activeTab === "likes"
-                    ? "text-white border-b-2 border-white"
-                    : "text-gray-400"
-                }`}
-              >
-                {post.likes.length} Likes
-              </button>
-            )}
-            {post.comments?.length > 0 && (
-              <button
-                onClick={() => setActiveTab("comments")}
-                className={`text-sm font-semibold ${
-                  activeTab === "comments"
-                    ? "text-white border-b-2 border-white"
-                    : "text-gray-400"
-                }`}
-              >
-                {post.comments.length} Comments
-              </button>
-            )}
           </div>
 
-          {/* Scrollable Likes/Comments */}
-          <div className="flex-1 overflow-y-auto max-h-[calc(100vh-160px)]">
-            {activeTab === "likes" && post.likes.length > 0 ? (
-              <ul className="space-y-3">
-                {post.likes.map((user) => (
-                  <li key={user._id} className="flex items-center gap-3">
-                    <img
-                      src={user.dp || defaultDp}
-                      alt={user.name}
-                      className="h-8 w-8 rounded-full object-cover border border-gray-600"
-                    />
-                    <span className="text-white text-sm">{user.name}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : activeTab === "likes" ? (
-              <p className="text-gray-400 text-sm">No likes yet.</p>
-            ) : null}
-
-            {activeTab === "comments" && post.comments.length > 0 ? (
-              <ul className="space-y-3">
-                {post.comments.map((comment, idx) => (
-                  <li key={idx} className="text-white text-sm">
-                    {/* {comment.text} */}
-                  </li>
-                ))}
-              </ul>
-            ) : activeTab === "comments" ? (
-              <p className="text-gray-400 text-sm">No comments yet.</p>
-            ) : null}
+          {/* List Content */}
+          <div className="flex-1 overflow-y-auto p-6 space-y-4 scrollbar-hide">
+            {activeTab === "likes" ? (
+              post.likes.length > 0 ? (
+                <div className="space-y-4">
+                  {post.likes.map((user) => (
+                    <Link
+                      key={user._id}
+                      href={`/home/profile/${user._id}`}
+                      className="flex items-center gap-3 p-2 rounded-2xl hover:bg-white/5 border border-transparent hover:border-white/10 transition-all"
+                    >
+                      <img
+                        src={user.dp || defaultDp}
+                        className="h-10 w-10 rounded-full object-cover border border-white/10"
+                        alt=""
+                      />
+                      <span className="text-white font-bold text-sm">
+                        {user.name}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500 text-center py-10 text-xs uppercase tracking-widest font-bold">
+                  No waves yet
+                </p>
+              )
+            ) : (
+              <p className="text-gray-500 text-center py-10 text-xs uppercase tracking-widest font-bold">
+                Comments coming soon
+              </p>
+            )}
           </div>
         </div>
       </div>

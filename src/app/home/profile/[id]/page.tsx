@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState } from "react";
 import ProfilePosts from "@/components/Profile/ProfilePosts";
@@ -10,38 +10,53 @@ import { useParams } from "next/navigation";
 export default function ProfilePage() {
   const params = useParams();
   const id = params?.id as string;
-  const [activeTab, setActiveTab] = useState<'posts' | 'following' | 'followers'>('posts');
+  const [activeTab, setActiveTab] = useState<
+    "posts" | "following" | "followers"
+  >("posts");
+
+  const tabs = [
+    { id: "posts", label: "Posts" },
+    { id: "following", label: "Following" },
+    { id: "followers", label: "Followers" },
+  ] as const;
 
   return (
-    <div className="w-full h-full text-white font-sans min-h-[calc(100vh-75px)] ">
-
+    <div className="w-full h-full text-white font-sans min-h-[calc(100vh-75px)] pb-20">
+      {/* 1. PROFILE HEADER */}
       <UserProfile id={id} />
 
-      <div className="sticky top-1 z-10 NavBg flex justify-around p-1 pl-2 pr-2 text-xl rounded-t-lg">
-        <button
-          onClick={() => setActiveTab('posts')}
-          className={`py-2 px-4 ${activeTab === 'posts' ? 'border-b-2 border-blue-400 text-white' : 'text-gray-400'}`}
-        >
-          Posts
-        </button>
-        <button
-          onClick={() => setActiveTab('following')}
-          className={`py-2 px-4 ${activeTab === 'following' ? 'border-b-2 border-blue-400 text-white' : 'text-gray-400'}`}
-        >
-          Following
-        </button>
-        <button
-          onClick={() => setActiveTab('followers')}
-          className={`py-2 px-4 ${activeTab === 'followers' ? 'border-b-2 border-blue-400 text-white' : 'text-gray-400'}`}
-        >
-          Followers
-        </button>
+      {/* 2. STICKY GLASS NAVIGATION 
+          - Changed to uppercase font-black for premium look
+          - Removed rounded-t-lg to match the container's sharp edges
+      */}
+      <div className="sticky top-0 z-30 bg-black/40 backdrop-blur-md border-y border-white/10 flex justify-around px-2">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`relative py-4 px-6 text-[11px] font-black uppercase tracking-[0.25em] transition-all duration-300 ${
+              activeTab === tab.id
+                ? "text-white"
+                : "text-gray-500 hover:text-gray-300"
+            }`}
+          >
+            {tab.label}
+
+            {/* Animated Active Indicator Line */}
+            {activeTab === tab.id && (
+              <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 animate-in fade-in zoom-in-x duration-500" />
+            )}
+          </button>
+        ))}
       </div>
 
-      <div className="mt-0.5">
-        {activeTab === 'posts' && <ProfilePosts id={id} />}
-        {activeTab === 'following' && <UserFollowings id={id} />}
-        {activeTab === 'followers' && <UserFollowers id={id} />}
+      {/* 3. CONTENT AREA 
+          - No margin-top to ensure the glass container sits flush against the nav
+      */}
+      <div className="animate-in fade-in duration-700">
+        {activeTab === "posts" && <ProfilePosts id={id} />}
+        {activeTab === "following" && <UserFollowings id={id} />}
+        {activeTab === "followers" && <UserFollowers id={id} />}
       </div>
     </div>
   );

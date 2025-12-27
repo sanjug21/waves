@@ -1,8 +1,9 @@
+"use client";
+
 import { getSocket } from "@/lib/socket";
 import { useAppSelector } from "@/store/hooks";
 import { SendMessagePayload } from "@/types/Conversation.type";
 import { IdProp } from "@/types/Props.types";
-import { set } from "mongoose";
 import { useEffect, useRef, useState } from "react";
 import { IoMdSend } from "react-icons/io";
 
@@ -11,11 +12,12 @@ export default function ChatTextField({ id }: IdProp) {
   const [message, setMessage] = useState<string>("");
   const currentUser = useAppSelector((state) => state.auth.user);
 
+  // Auto-resize logic
   useEffect(() => {
     const textarea = textareaRef.current;
     if (textarea) {
       textarea.style.height = "auto";
-      textarea.style.height = `${Math.min(textarea.scrollHeight, 96)}px`;
+      textarea.style.height = `${Math.min(textarea.scrollHeight, 120)}px`;
     }
   }, [message]);
 
@@ -31,48 +33,56 @@ export default function ChatTextField({ id }: IdProp) {
   };
 
   const handleSend = () => {
-    if (!currentUser) return;
+    if (!currentUser || message.trim() === "") return;
 
-    // const formData = new FormData();
-    // formData.append("message", message);
-    // formData.append("senderId", currentUser._id); 
-    // formData.append("receiverId", id);
-    const socket=getSocket();
-
-    const payload:SendMessagePayload={
-      message,
-      senderId:currentUser._id,
-      receiverId:id
-    }
+    const socket = getSocket();
+    const payload: SendMessagePayload = {
+      message: message.trim(),
+      senderId: currentUser._id,
+      receiverId: id,
+    };
 
     socket.emit("sendMessage", payload);
     setMessage("");
+
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+    }
   };
 
   return (
-    <div className="pt-1 pr-2 pl-2 relative h-14">
-      <textarea
-        ref={textareaRef}
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder="Type your message..."
-        rows={1}
-        className="w-full px-4 pr-12 py-2 resize-none shadow-gray-300 bg-white shadow-2xl rounded-3xl border text-black focus:outline-none focus:ring-2 focus:border-0 focus:ring-[rgb(255,127,80)] overflow-hidden transition-all duration-200 ease-in-out scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-400 hover:scrollbar-thumb-gray-600"
-        aria-label="Chat message input"
-      />
-      <button
-        onClick={handleSend}
-        disabled={message.trim() === ""}
-        aria-label="Send message"
-        className={`absolute right-4 top-1/2 transform -translate-y-1/2 ${
-          message.trim() === ""
-            ? "opacity-40 cursor-not-allowed"
-            : "cursor-pointer"
-        }`}
-      >
-        <IoMdSend className="h-6 w-6 text-[rgb(0,12,60)]" />
-      </button>
+    /* 1. WRAPPER: Differentiates the input area from the chat list 
+       Adds a subtle solid tint to anchor the bottom of the screen */
+    <div className="w-full  backdrop-blur-md border-t border-white/5 p-2">
+      <div className="max-w-4xl mx-auto relative flex items-center">
+        {/* 2. THE INPUT FIELD */}
+        <textarea
+          ref={textareaRef}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="Send a wave..."
+          rows={1}
+          className="w-full px-5 py-3 pr-14 resize-none bg-white/[0.1] backdrop-blur-3xl border border-white/20 rounded-[1.8rem] text-white placeholder:text-gray-400 focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.15] transition-all duration-300 min-h-[50px] max-h-32 scrollbar-hide leading-normal flex items-center"
+          aria-label="Chat message input"
+        />
+
+        {/* 3. SEND BUTTON: Centered vertically using absolute positioning 
+            'top-1/2 -translate-y-1/2' ensures it's always in the middle */}
+        <div className="absolute right-2 top-1/2 -translate-y-1/2">
+          <button
+            onClick={handleSend}
+            disabled={message.trim() === ""}
+            className={`p-2.5 rounded-full transition-all duration-300 flex items-center justify-center ${
+              message.trim() === ""
+                ? "text-gray-500 opacity-20 scale-90"
+                : "text-white bg-gradient-to-tr from-blue-500 to-purple-600 shadow-lg shadow-blue-500/40 scale-100 active:scale-90 hover:brightness-110"
+            }`}
+          >
+            <IoMdSend className="h-5 w-5" />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

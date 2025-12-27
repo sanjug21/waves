@@ -2,7 +2,7 @@
 
 import getUserSuggestion from "@/hooks/getUserSuggestionHook";
 import { followUnfollowUser } from "@/hooks/profileHooks";
-import { UserDetails } from "@/types/UserDetails.tpye";
+import { UserDetails } from "@/types/UserDetails.type";
 import { useEffect, useRef, useState } from "react";
 import { TbRefresh } from "react-icons/tb";
 import { useAppSelector } from "@/store/hooks";
