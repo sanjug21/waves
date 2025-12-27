@@ -6,7 +6,7 @@ import Like from "@/lib/models/Like.model";
 import { Recommender } from "@/lib/reommender/recommender";
 import { verifyAccessToken } from "@/utils/auth";
 
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
     try {
         const token = req.cookies.get("accessToken")?.value;
         if (!token) {

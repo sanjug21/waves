@@ -21,7 +21,7 @@ export default function RecommendedPosts() {
     try {
       setLoading(true);
       setError(null);
-      const res = await API.post("/posts/recommendPosts");
+      const res = await API.get("/posts/recommendPosts");
       setRecommendations(res.data);
     } catch (err: any) {
       setError(err?.message || "Failed to fetch recommendations");
