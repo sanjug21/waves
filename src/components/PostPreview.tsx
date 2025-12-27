@@ -36,7 +36,7 @@ export default function PostPreview({
         {/* CLOSE BUTTON (Floating) */}
         <button
           onClick={onClose}
-          className="absolute top-6 right-6 z-50 p-2 rounded-full bg-black/40 border border-white/10 text-white hover:bg-red-500/20 transition-all active:scale-90"
+          className="absolute top-2 right-2 z-50 p-2 rounded-full bg-black/40 border border-white/10 text-white hover:bg-red-500/20 transition-all active:scale-90"
         >
           <X size={20} />
         </button>
