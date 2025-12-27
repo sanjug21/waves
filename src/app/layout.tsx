@@ -1,7 +1,7 @@
-
+import "./globals.css";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { ReduxProvider } from "@/components/Providers/ReduxProvider"; 
+import { ReduxProvider } from "@/components/Providers/ReduxProvider";
 import { ToastContainer } from "react-toastify";
 import { AuthStatusLoader } from "@/components/Providers/authStatus";
 const geistSans = Geist({
@@ -34,22 +34,20 @@ export default function RootLayout({
       >
         <ReduxProvider>
           <AuthStatusLoader>
-
-          
-          {children}
-          <ToastContainer
-            position="top-right"
-            className="mt-20"
-            autoClose={2000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="colored"
-          />
+            {children}
+            <ToastContainer
+              position="top-right"
+              className="mt-20"
+              autoClose={2000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="colored"
+            />
           </AuthStatusLoader>
         </ReduxProvider>
       </body>

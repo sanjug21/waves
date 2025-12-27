@@ -18,36 +18,16 @@
         "name": "next"
       }
     ],
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    },
-    "outDir": "./dist/"
+    }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/home/profile/[id]", "src/Socket/**/*.ts", "src/socket.ts"],
+  "include": [
+    "next-env.d.ts", 
+    "**/*.ts", 
+    "**/*.tsx", 
+    ".next/types/**/*.ts",
+    "src/**/*" 
+  ],
   "exclude": ["node_modules"]
 }
-
-// {
-//   "compilerOptions": {
-//     "module": "commonjs",
-//     "target": "es2020",
-//     "lib": ["esnext"],
-//     "strict": true,
-//     "esModuleInterop": true,
-//     "skipLibCheck": true,
-//     "forceConsistentCasingInFileNames": true,
-
-//     // This is the path alias configuration
-//     "baseUrl": ".",
-//     "paths": {
-//       "@/*": ["./src/*"]
-//     },
-
-//     // This tells TypeScript where to output the compiled JS files
-//     "outDir": "./dist"
-//   },
-//   // This tells TypeScript which files to compile for this build
-//   "include": ["src/Socket/**/*.ts"],
-//   "exclude": ["node_modules"]
-// }
