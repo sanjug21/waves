@@ -14,19 +14,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Start mobile users at the "Feed" (the middle section)
+    // 1. Force mobile to start at the Feed (Index 1 if Suggestions were visible)
+    // Since we want to block the first panel, we scroll to index 0 of the "allowed" area
     if (window.innerWidth < 768 && scrollContainerRef.current) {
-      // We calculate the width of one section to center the feed
-      const width = window.innerWidth;
-      scrollContainerRef.current.scrollTo({ left: 0, behavior: "auto" });
+      // We skip the first panel (Suggestion) by scrolling by one window width
+      scrollContainerRef.current.scrollLeft = window.innerWidth;
     }
   }, []);
-
-  useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      router.replace("/auth/login");
-    }
-  }, [loading, isAuthenticated, router]);
 
   if (loading || !isAuthenticated)
     return (
@@ -37,42 +31,32 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="h-screen HomeBg flex flex-col overflow-hidden">
-      {/* NAVBAR */}
       <div className="sticky top-0 z-50 h-[75px] shrink-0">
         <NavBar />
       </div>
 
-      {/* HORIZONTAL SLIDE CONTAINER 
-          - snap-x snap-mandatory: Enables the "Slide to change" behavior
-          - overflow-x-auto: Allows swiping on mobile
-          - md:overflow-x-visible: Disables swiping on desktop to keep 3-column layout
-      */}
       <div
         ref={scrollContainerRef}
         className="flex-1 flex overflow-x-auto md:overflow-x-visible snap-x snap-mandatory scrollbar-hide"
       >
-        <div className="flex w-full min-h-full">
-          {/* 1. SUGGESTIONS (Left Slide) 
-              - snap-center: Snaps here when swiped left
+        <div className="flex w-fit md:w-full min-h-full">
+          {/* 1. SUGGESTIONS (Hidden on Mobile) 
+              We use 'hidden md:block' so it doesn't exist in the mobile scroll snap chain.
           */}
-          <aside className="w-full shrink-0 snap-center md:snap-align-none md:w-[30%] lg:w-[25%] p-5 h-[calc(100vh-75px)] overflow-y-auto scrollbar-hide border-r border-white/5">
-            <div className="md:hidden mb-4 opacity-40 text-[10px] font-black uppercase tracking-[0.3em] text-center">
-              Swipe right for Feed →
-            </div>
+          <aside className="hidden md:block md:w-[30%] lg:w-[25%] p-5 h-[calc(100vh-75px)] overflow-y-auto scrollbar-hide border-r border-white/5">
             <Suggestion />
           </aside>
 
           {/* 2. MAIN FEED (Middle Slide) */}
-          <main className="w-full shrink-0 snap-center md:snap-align-none md:w-[40%] lg:w-[50%] h-[calc(100vh-75px)] overflow-y-auto scrollbar-hide">
-            <div className="md:hidden flex justify-between px-6 py-2 opacity-30 text-[9px] font-black uppercase tracking-widest">
-              <span>← Suggestions</span>
+          <main className="w-screen md:w-[40%] lg:w-[50%] shrink-0 snap-center h-[calc(100vh-75px)] overflow-y-auto scrollbar-hide">
+            <div className="md:hidden flex justify-end px-6 py-2 opacity-30 text-[9px] font-black uppercase tracking-widest">
               <span>Chats →</span>
             </div>
             <div className="max-w-[700px] mx-auto">{children}</div>
           </main>
 
           {/* 3. CONVERSATIONS (Right Slide) */}
-          <aside className="w-full shrink-0 snap-center md:snap-align-none md:w-[30%] lg:w-[25%] p-2 h-[calc(100vh-75px)] overflow-y-auto scrollbar-hide border-l border-white/5">
+          <aside className="w-screen md:w-[30%] lg:w-[25%] shrink-0 snap-center p-2 h-[calc(100vh-75px)] overflow-y-auto scrollbar-hide border-l border-white/5">
             <div className="md:hidden mb-4 opacity-40 text-[10px] font-black uppercase tracking-[0.3em] text-center">
               ← Swipe left for Feed
             </div>
