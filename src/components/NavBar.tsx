@@ -105,8 +105,8 @@ export const NavBar = () => {
             }`}
           >
             <div
-              className={`flex items-center bg-gray-900/90 backdrop-blur-md rounded-full px-1 md:px-2 py-1 border border-gray-700 w-full transition-all duration-300 ${
-                showSearchInput ? "max-w-full" : "max-w-[420px]"
+              className={`flex items-center bg-gray-900/90 backdrop-blur-md rounded-full px-1 md:px-2 py-1 border border-gray-700 w-full  ${
+                showSearchInput ? "max-w-full md:w-[420px]" : "max-w-[420px]"
               } justify-around`}
             >
               {/* Icons logic */}
@@ -129,7 +129,7 @@ export const NavBar = () => {
                 }`}
               >
                 {showSearchInput ? (
-                  <div className="relative w-full flex items-center bg-gray-800 rounded-full px-3 py-1.5">
+                  <div className="relative w-full flex items-center  rounded-full px-3 py-2.5">
                     <input
                       ref={inputRef}
                       type="text"
